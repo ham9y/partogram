@@ -465,49 +465,63 @@ function saveJSON(){const obj={patient:{name:$('name').value,age:$('age').value,
 function savePartogramWithReport(){
   const wrap = document.getElementById('partoWrap');
   const summaryEl = document.getElementById('summary');
-  if (!wrap) return;
-  const loadScript = src => new Promise((resolve, reject) => {
-    const existing = document.querySelector('script[src="' + src + '"]');
-    if (existing) { existing.addEventListener('load', resolve, {once:true}); return; }
-    const script = document.createElement('script');
-    script.src = src; script.onload = resolve; script.onerror = reject;
-    document.head.appendChild(script);
+  if (!wrap || !window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
+    alert('Export libraries are still loading. Please tap again in a moment.');
+    return;
+  }
+
+  const clone = wrap.cloneNode(true);
+  clone.style.cssText = 'position:fixed;left:-100000px;top:0;width:1912px;height:3021px;max-width:none;z-index:-1;';
+  document.body.appendChild(clone);
+
+  window.html2canvas(clone, {
+    useCORS: true,
+    backgroundColor: '#fff',
+    scale: 1,
+    width: 1912,
+    height: 3021
+  }).then((partCanvas) => {
+    clone.remove();
+
+    const pdf = new window.jspdf.jsPDF({orientation: 'portrait', unit: 'px', format: 'a4', compress: true});
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgData = partCanvas.toDataURL('image/jpeg', 0.95);
+    const imgWidth = pageWidth - 24;
+    const imgHeight = (partCanvas.height * imgWidth) / partCanvas.width;
+    const page1Height = Math.min(imgHeight, pageHeight - 26);
+    pdf.addImage(imgData, 'JPEG', 12, 12, imgWidth, page1Height, undefined, 'FAST');
+
+    const reportTitle = 'Case summary';
+    const reportText = (summaryEl ? summaryEl.innerText : '').trim() || 'No observations yet.';
+    const reportLines = pdf.splitTextToSize(reportText, pageWidth - 30);
+    pdf.addPage();
+    pdf.setFontSize(16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text(reportTitle, 14, 22);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(11);
+    pdf.text(reportLines, 14, 36);
+
+    const filename = 'partogram_with_report_' + ($('hospitalNo').value || 'case') + '.pdf';
+    const blob = pdf.output('blob');
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    setTimeout(() => {
+      link.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        link.remove();
+      }, 250);
+    }, 0);
+  }).catch((error) => {
+    clone.remove();
+    alert('Unable to create the combined PDF. Check your internet connection and try again.');
+    console.error(error);
   });
-  (async () => {
-    try {
-      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
-      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-      const clone = wrap.cloneNode(true);
-      clone.style.cssText = 'position:fixed;left:-100000px;top:0;width:1912px;height:3021px;max-width:none;z-index:-1;';
-      document.body.appendChild(clone);
-      const partCanvas = await html2canvas(clone, {useCORS:true, backgroundColor:'#fff', scale:1, width:1912, height:3021});
-      clone.remove();
-
-      const pdf = new window.jspdf.jsPDF({orientation:'portrait', unit:'px', format:'a4', compress:true});
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgData = partCanvas.toDataURL('image/jpeg', .95);
-      const imgWidth = pageWidth - 24;
-      const imgHeight = (partCanvas.height * imgWidth) / partCanvas.width;
-      const page1Height = Math.min(imgHeight, pageHeight - 26);
-      pdf.addImage(imgData, 'JPEG', 12, 12, imgWidth, page1Height, undefined, 'FAST');
-
-      const reportTitle = 'Case summary';
-      const reportText = (summaryEl ? summaryEl.innerText : '').trim() || 'No observations yet.';
-      const reportLines = pdf.splitTextToSize(reportText, pageWidth - 30);
-      pdf.addPage();
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text(reportTitle, 14, 22);
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(11);
-      pdf.text(reportLines, 14, 36);
-      pdf.save('partogram_with_report_' + ($('hospitalNo').value || 'case') + '.pdf');
-    } catch (error) {
-      alert('Unable to create the combined PDF. Check your internet connection and try again.');
-      console.error(error);
-    }
-  })();
 }
 function downloadGridPdf(){
   const wrap = document.getElementById('partoWrap');
@@ -572,5 +586,7 @@ function downloadGridImage(){
 	})();
 }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
