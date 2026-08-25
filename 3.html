@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WHO Partograph - Complicated Case / CS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#9f1239;--p2:#be123c;--ink:#2b1b22;--muted:#765d66;--bg:#fff7f8;--card:#fff;--line:#ead5da;--soft:#fff1f2;--warn:#fff7ed}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5;padding-bottom:40px}.page-footer{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(255,255,255,.86);backdrop-filter:blur(2px);border:1px solid rgba(190,18,60,.12);box-shadow:0 8px 20px rgba(136,19,55,.08);padding:7px 22px;border-radius:999px;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.2px;white-space:nowrap;z-index:20}
+header{background:linear-gradient(135deg,#881337,#be123c);color:#fff;padding:15px 20px;position:sticky;top:0;z-index:10;box-shadow:0 3px 18px rgba(88,12,38,.2);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}header h1{font-size:20px;font-weight:700}header p{font-size:12px;opacity:.88}.header-actions{display:flex;gap:8px;flex-wrap:wrap}.header-actions button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;padding:7px 13px;border-radius:8px;cursor:pointer}
+main{max-width:1400px;margin:auto;padding:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px 19px;margin-bottom:16px;box-shadow:0 2px 12px rgba(112,28,57,.05)}h2{font-size:18px;color:#881337;margin-bottom:13px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}.badge{font-size:11px;color:#9a3412;background:#ffedd5;border-radius:20px;padding:3px 10px;font-weight:600}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px 16px}.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.35px;margin-bottom:4px}.field input,.field select{width:100%;padding:10px 11px;border:1px solid #ddc8ce;border-radius:9px;background:#fff;color:var(--ink);font-size:14px}.field input:focus,.field select:focus{outline:0;border-color:var(--p2);box-shadow:0 0 0 3px rgba(190,18,60,.12)}.scenario{background:var(--soft);border:1px solid #fecdd3;border-radius:11px;padding:13px 15px;margin-bottom:15px}.scenario p{font-size:12px;color:var(--muted);margin-top:5px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.actions button{border:0;border-radius:9px;padding:10px 19px;font-weight:700;font-size:14px;cursor:pointer}.primary{background:var(--p);color:#fff}.secondary{background:#ffe4e6;color:#881337}.notice{background:var(--warn);border:1px solid #fed7aa;color:#9a3412;border-radius:9px;padding:11px 14px;margin-top:14px;font-size:13px}.hidden{display:none!important}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:10px}.tbl{border-collapse:collapse;width:100%;min-width:1240px;font-size:11px}.tbl th{background:#fff1f2;color:#881337;padding:7px 4px;border-bottom:2px solid var(--line);font-size:9px;text-transform:uppercase;white-space:nowrap}.tbl td{text-align:center;padding:3px;border-bottom:1px solid #f5e8eb}.tbl input,.tbl select{width:52px;padding:4px 2px;border:1px solid #ead5da;border-radius:5px;font-size:10px;text-align:center}.tbl .time{width:125px}.remove{width:24px!important;background:#ffe4e6;color:#9f1239;font-weight:700}.charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}.chart{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}.chart h3{font-size:13px;color:#881337;margin-bottom:5px}.chart svg{display:block;width:100%;height:auto;background:#fffafa}.summary{background:#fff7f8;border-left:4px solid var(--p);border-radius:8px;padding:13px 16px;font-size:14px;line-height:1.8}.muted{color:var(--muted);font-size:12px}@media(max-width:850px){.charts{grid-template-columns:1fr}}@media print{header,.no-print{display:none!important}body{background:#fff}.card{box-shadow:none;break-inside:avoid}}
+</style>
+<style>
+#partoWrap{position:relative;width:100%;max-width:1912px;margin:0 auto;background:#fff;border:2px solid var(--line);border-radius:10px;overflow:hidden;line-height:0}
+#partoWrap img{display:block;width:100%;height:auto}
+#partoWrap svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chartbox{border:1px solid var(--line);border-radius:12px;padding:10px 12px 6px;background:#fffafa}
+.chartbox h3{font-size:13px;font-weight:600;color:#881337;margin:0 0 6px}
+.chartbox svg{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:16px 28px;font-size:12px;color:var(--muted);padding:4px 0 10px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.legend-item{display:flex;align-items:center;gap:6px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;flex-shrink:0}
+@media(max-width:900px){.charts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<div><h1>WHO Partograph - Complicated Case / CS</h1><div class="author">By Dr.Hamdy</div></div>
+<div class="header-actions no-print"><button onclick="resetForm()">Reset</button><button onclick="window.location.href='1.html'">Back</button></div>
+</header>
+<main>
+<section class="card">
+<h2>1. Patient data &amp; admission <span class="badge">CS case</span></h2>
+<div class="scenario">
+<div class="field"><label for="scenario">Complicated-case scenario</label><select id="scenario" onchange="changeScenario()">
+<option value="distress">Fetal distress / non-reassuring FHR</option>
+<option value="obstructed">Obstructed or prolonged labour</option>
+<option value="preeclampsia">Severe pre-eclampsia</option>
+<option value="haemorrhage">Antepartum haemorrhage</option>
+<option value="failed-induction">Failed induction / failed progress</option>
+</select></div>
+<p id="scenarioNote">Progressive fetal tachycardia and decelerations lead to urgent CS while maternal observations remain broadly stable.</p>
+</div>
+<div class="grid">
+<div class="field"><label>Name</label><input id="name" value=""></div><div class="field"><label>Age</label><input id="age" value=""></div><div class="field"><label>Gravida</label><input id="gravida" value=""></div><div class="field"><label>Para</label><input id="para" value=""></div><div class="field"><label>Hospital #</label><input id="hospitalNo" value=""></div>
+<div class="field"><label>Admission date</label><input id="admissionDate" type="date"></div><div class="field"><label>Admission time</label><input id="admissionTime" type="time"></div><div class="field"><label>ROM time</label><input id="romTime" type="time"></div><div class="field"><label>Cervix at admission (cm)</label><select id="admitCervix"><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></div><div class="field"><label>Descent in fifths (stage)</label><select id="admitDescent"><option value="5" selected>5 (-2)</option><option value="4">4 (-1)</option><option value="3">3 (stage 0)</option><option value="2">2 (+1)</option><option value="1">1 (+2)</option></select></div>
+<div class="field"><label>IV fluid</label><input id="fluid" value="Normal saline"></div><div class="field"><label>Fluid rate</label><input id="fluidRate" value="1000 mL"></div><div class="field"><label>Oxytocin</label><select id="oxy"><option value="none">None</option><option value="started" selected>Started</option></select></div><div class="field"><label>Oxytocin conc. (U/L)</label><input id="oxyConc" value="10"></div><div class="field"><label>Oxytocin drops/min</label><input id="oxyDrops" value="20"></div>
+<div class="field"><label>Time of CS</label><input id="csTime" type="time"></div>
+</div>
+<div class="actions no-print"><button class="primary" onclick="generateCase()">Generate scenario</button></div>
+<div class="notice"><strong>Documentation aid:</strong> generated values are illustrative scenario templates. Verify and replace them with the actual clinical record.</div>
+</section>
+<section class="card hidden" id="observationsCard">
+<h2>2. Observations <span class="badge">scenario-generated and editable</span></h2><p class="muted">Each scenario produces its own consistent pattern. Edit individual values when entering the clinical record.</p>
+<div class="tablewrap"><table class="tbl" id="obsTable"><thead><tr><th>Time</th><th>Cervix<br>cm</th><th>Descent<br>/5</th><th>FHR<br>bpm</th><th>Liquor</th><th>Molding</th><th>Contr.</th><th>Duration</th><th>Pulse</th><th>BP</th><th>Temp</th><th></th></tr></thead><tbody></tbody></table></div>
+<div class="actions no-print"><button class="secondary" onclick="addObservation()">+ Add row</button><button class="secondary" onclick="generateCase()">Regenerate</button><button class="secondary" onclick="clearObservations()">Clear</button></div>
+</section>
+<section class="card hidden" id="partographCard">
+<h2>3. WHO partogram plot <span class="badge">CS overlay</span></h2>
+<p class="muted">The observations are plotted on the standard WHO Modified Partograph. The red marker shows the selected time of CS.</p>
+<div id="partoWrap"><img src="who-partograph-grid.png" alt="WHO Modified Partograph"><svg id="partoOverlay" viewBox="0 0 1912 3021" preserveAspectRatio="xMidYMid meet"></svg></div>
+<div class="actions no-print" style="margin-top:12px;"><button class="secondary" onclick="downloadGridPdf()">Download PDF</button><button class="secondary" onclick="downloadGridImage()">Download image</button></div>
+</section>
+<section class="card hidden" id="resultsCard">
+<h2>4. Classic WHO partograph graphs</h2>
+<div class="legend">
+<span class="legend-item"><span class="dot" style="background:#0f766e;"></span>Cervix (X)</span>
+<span class="legend-item"><span class="dot" style="background:#b45309;"></span>Descent (O)</span>
+<span class="legend-item"><span class="dot" style="background:#7c3aed;"></span>FHR</span>
+<span class="legend-item"><span class="dot" style="background:#dc2626;"></span>Contractions</span>
+<span class="legend-item"><span class="dot" style="background:#b45309;"></span>Pulse</span>
+<span class="legend-item"><span style="display:inline-block;width:20px;height:3px;background:#666;border-top:2px dashed #666;"></span> Alert line</span>
+<span class="legend-item"><span style="display:inline-block;width:20px;height:3px;background:#999;border-top:2px dotted #999;"></span> Action line</span>
+</div>
+<div class="charts">
+<div class="chartbox"><h3>Cervical dilatation &amp; descent</h3><svg id="cervixGraph" viewBox="0 0 1150 480"></svg></div>
+<div class="chartbox"><h3>Fetal heart rate (bpm)</h3><svg id="fhrGraph" viewBox="0 0 1150 380"></svg></div>
+<div class="chartbox"><h3>Contractions / 10 min</h3><svg id="conGraph" viewBox="0 0 1150 380"></svg></div>
+<div class="chartbox"><h3>Maternal pulse, BP &amp; temperature</h3><svg id="maternalGraph" viewBox="0 0 1150 420"></svg></div>
+</div>
+<div id="summary" class="summary" style="margin-top:12px;"></div>
+<div class="actions no-print"><button class="primary" onclick="savePartogramWithReport()">Save partogram with report</button></div>
+</section>
+</main>
+<div class="page-footer">وفقنا الله وإياكم</div>
+<script>
+const $=id=>document.getElementById(id);
+const scenarioInfo={
+ distress:{note:'Progressive fetal tachycardia and decelerations lead to urgent CS while maternal observations remain broadly stable.',base:{cervix:[4,5,6,6.5,7],descent:[5,4,4,3,3],fhr:[150,165,178,155,110],con:[2,3,3,4,4],pulse:[82,86,90,94,98],bp:['120/75','122/76','124/78','126/80','128/82'],temp:[36.8,36.9,37,37,37.1],liquor:['I','C','C','C','C'],molding:['0','+','+','++','++'],duration:['mild','moderate','moderate','strong','strong']}},
+ obstructed:{note:'Slow cervical change, increasing molding and maternal tachycardia are consistent with obstructed or prolonged labour.',base:{cervix:[4,4.5,5,5,5.5],descent:[5,5,5,4,4],fhr:[145,148,152,158,162],con:[2,3,4,5,5],pulse:[84,92,102,112,120],bp:['118/74','120/76','124/78','128/82','132/86'],temp:[37,37.2,37.4,37.6,37.8],liquor:['I','C','C','C','C'],molding:['0','+','++','+++','+++'],duration:['mild','moderate','strong','strong','strong']}},
+ preeclampsia:{note:'Severe hypertension with rising pulse and preserved fetal heart rate prompts CS for maternal and fetal safety.',base:{cervix:[4,5,6,6,6],descent:[5,4,4,3,3],fhr:[142,145,150,148,146],con:[2,3,3,4,4],pulse:[88,94,100,106,112],bp:['150/100','158/104','166/108','174/112','180/116'],temp:[37,37,37.1,37.1,37.2],liquor:['I','C','C','C','C'],molding:['0','0','+','+','++'],duration:['mild','moderate','moderate','strong','strong']}},
+ haemorrhage:{note:'Maternal pulse rises with blood-loss concern while blood pressure trends downward, prompting emergency CS.',base:{cervix:[4,5,5.5,6,6],descent:[5,4,4,4,3],fhr:[148,150,155,160,165],con:[2,3,3,3,4],pulse:[86,98,112,126,138],bp:['122/78','116/74','108/68','98/62','90/56'],temp:[36.7,36.8,36.8,36.9,37],liquor:['I','I','C','C','C'],molding:['0','0','+','+','+'],duration:['mild','moderate','moderate','moderate','strong']}},
+ 'failed-induction':{note:'Oxytocin-supported labour shows contractions without adequate cervical progress, consistent with failed induction or failed progress.',base:{cervix:[4,4.5,5,5,5],descent:[5,5,4,4,4],fhr:[140,144,148,150,152],con:[1,2,3,4,5],pulse:[80,84,88,92,96],bp:['116/72','118/74','120/76','122/78','124/80'],temp:[36.8,36.9,37,37,37.1],liquor:['I','C','C','C','C'],molding:['0','0','+','+','++'],duration:['mild','mild','moderate','strong','strong']}}
+};
+function updateScenarioNote(){$('scenarioNote').textContent=scenarioInfo[$('scenario').value].note;}
+function changeScenario(){updateScenarioNote();if($('obsTable').querySelector('tbody tr')&&$('obsTable').querySelector('tbody tr'))generateCase()}
+function bindScenarioTimeInputs(){
+	['admissionDate','admissionTime','romTime','csTime','scenario'].forEach(id => {
+		const el = $(id);
+		if (!el) return;
+		el.addEventListener('input', () => {
+			if (id === 'scenario') {
+				updateScenarioNote();
+			}
+			if ($('admissionDate').value && $('admissionTime').value && $('csTime').value) {
+				generateCase();
+			}
+		});
+		el.addEventListener('change', () => {
+			if (id === 'scenario') {
+				updateScenarioNote();
+			}
+			if ($('admissionDate').value && $('admissionTime').value && $('csTime').value) {
+				generateCase();
+			}
+		});
+	});
+}
+function pad(n){return String(n).padStart(2,'0')}
+function dateTime(date,time,offset){const d=new Date(date+'T'+time);d.setMinutes(d.getMinutes()+offset);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes())}
+
+// Build a table row for an observation without attaching event listeners.
+function buildObservationRow(d={}){
+	const tr=document.createElement('tr');
+	const inputEl=(cls,type,value)=>{const el=document.createElement('input');el.className=cls;el.type=type;el.value=value??'';return el};
+	const selectEl=(cls,values,value)=>{const el=document.createElement('select');el.className=cls;values.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;if(v===value) o.selected=true;el.appendChild(o)});return el};
+	const cells=[inputEl('time','datetime-local',d.time),inputEl('','number',d.cervix),inputEl('','number',d.descent),inputEl('','number',d.fhr),selectEl('',['','I','C','M','B','A'],d.liquor),selectEl('',['','0','+','++','+++'],d.molding),inputEl('','number',d.con),selectEl('',['mild','moderate','strong'],d.duration||'mild'),inputEl('','number',d.pulse),inputEl('','text',d.bp),inputEl('','number',d.temp)];
+	cells.forEach(el=>{const td=document.createElement('td');td.appendChild(el);tr.appendChild(td)});
+	const td=document.createElement('td');const rm=inputEl('remove','button','x');td.appendChild(rm);tr.appendChild(td);
+	return tr;
+}
+
+function attachRowListeners(tr){
+	if(!tr) return;
+	const inputs = tr.querySelectorAll('input,select');
+	inputs.forEach(el=>{el.addEventListener('input',debouncedUpdate); el.addEventListener('change',debouncedUpdate);});
+	const rm = tr.querySelector('input.remove');
+	if(rm) rm.addEventListener('click',()=>{ tr.remove(); debouncedUpdate(); });
+}
+
+function buildScenarioObservation({date,time,romTime,csTime,scenarioKey,offsetMinutes,totalMinutes}){
+	const scenario = scenarioInfo[scenarioKey].base;
+	const admit = parseDateTime(date + 'T' + time);
+	const rom = romTime ? parseDateTime(date + 'T' + romTime) : null;
+	const currentTime = new Date(admit.getTime() + offsetMinutes * 60000);
+	const p = totalMinutes ? offsetMinutes / totalMinutes : 0;
+	const enteredCervix = Number($('admitCervix').value);
+	const enteredDescent = Number($('admitDescent').value);
+	const startCervix = Number.isFinite(enteredCervix) ? enteredCervix : scenario.cervix[0];
+	const startDescent = Number.isFinite(enteredDescent) ? enteredDescent : scenario.descent[0];
+	const sample = (values, linear = true) => {
+		if (!values || !values.length) return values && values[0] || '';
+		if (linear && typeof values[0] === 'number') {
+			const position = p * (values.length - 1);
+			const low = Math.floor(position), high = Math.min(values.length - 1, low + 1), amount = position - low;
+			return values[low] + (values[high] - values[low]) * amount;
+		}
+		return values[Math.min(values.length - 1, Math.round(p * (values.length - 1)))];
+	};
+	const noise = (amount, spread) => amount + (Math.random() - 0.5) * spread;
+	const sampleBP = (values) => {
+		const parts = values.map(value => String(value).split('/').map(Number));
+		const position = p * (parts.length - 1);
+		const low = Math.floor(position), high = Math.min(parts.length - 1, low + 1), amount = position - low;
+		const sys = noise(parts[low][0] + (parts[high][0] - parts[low][0]) * amount, 4);
+		const dia = noise(parts[low][1] + (parts[high][1] - parts[low][1]) * amount, 3);
+		return Math.round(sys) + '/' + Math.round(dia);
+	};
+	const beforeRom = rom && currentTime < rom;
+	const cervixBase = sample(scenario.cervix);
+	const descentBase = sample(scenario.descent);
+	const cervix = Math.round(Math.max(0, Math.min(10, noise(cervixBase + (startCervix - scenario.cervix[0]), 0.24))));
+	const descent = Math.round(Math.max(0, Math.min(5, noise(descentBase + (startDescent - scenario.descent[0]), 0.18))));
+	const fhr = Math.round(Math.max(80, Math.min(200, noise(sample(scenario.fhr, false), 6))));
+	const con = Math.max(0, Math.min(5, Math.round(noise(sample(scenario.con), 0.6))));
+	const pulse = Math.round(Math.max(60, Math.min(180, noise(sample(scenario.pulse), 4))));
+	const temp = Number((Math.round(noise(sample(scenario.temp), 0.12) * 10) / 10).toFixed(1));
+	const liquor = beforeRom ? 'I' : (sample(scenario.liquor, false) || 'C');
+	const molding = beforeRom ? '0' : (sample(scenario.molding, false) || '+');
+	const duration = sample(scenario.duration, false) || 'mild';
+	return {
+		time: dateTime(date, time, offsetMinutes),
+		cervix,
+		descent,
+		fhr,
+		liquor,
+		molding,
+		con,
+		duration,
+		pulse,
+		bp: sampleBP(scenario.bp),
+		temp
+	};
+}
+
+function generateCase(){
+	const date = $('admissionDate').value;
+	const time = $('admissionTime').value;
+	const cs = $('csTime').value;
+	if(!date || !time || !cs){ alert('Please enter admission date, admission time, and time of CS.'); return; }
+	const admit = parseDateTime(date + 'T' + time);
+	let csDate = parseDateTime(date + 'T' + cs);
+	if (!csDate || csDate <= admit) csDate = new Date(admit.getTime() + 6 * 3600000);
+	const totalMinutes = Math.max(30, Math.round((csDate - admit) / 60000));
+	const romTime = $('romTime').value ? $('romTime').value : null;
+	const times = [];
+	for (let offset = 0; offset <= totalMinutes; offset += 30) times.push(offset);
+	if (times[times.length - 1] !== totalMinutes) times.push(totalMinutes);
+	const tbody = $('obsTable').querySelector('tbody');
+	tbody.innerHTML = '';
+	const frag = document.createDocumentFragment();
+	window._generating = true;
+	times.forEach(offsetMinutes => {
+		const row = buildScenarioObservation({
+			date,
+			time,
+			romTime,
+			csTime: $('csTime').value,
+			scenarioKey: $('scenario').value,
+			offsetMinutes,
+			totalMinutes
+		});
+		frag.appendChild(buildObservationRow(row));
+	});
+	tbody.appendChild(frag);
+	const added = tbody.children.length;
+	for (let i = 0; i < added; i++) attachRowListeners(tbody.children[i]);
+	window._generating = false;
+	$('observationsCard').classList.remove('hidden');
+	$('partographCard').classList.remove('hidden');
+	$('resultsCard').classList.remove('hidden');
+	drawAll();
+}
+
+function addObservation(d={}){
+	const tr = buildObservationRow(d);
+	attachRowListeners(tr);
+	$('obsTable').querySelector('tbody').appendChild(tr);
+	if(!window._generating) debouncedUpdate();
+}
+
+function getData(){return [...$('obsTable').querySelectorAll('tbody tr')].map(tr=>{const v=[...tr.querySelectorAll('input,select')].map(x=>x.value);return{time:v[0],cervix:+v[1],descent:+v[2],fhr:+v[3],liquor:v[4],molding:v[5],con:+v[6],duration:v[7],pulse:+v[8],bp:v[9],temp:+v[10]}})}
+function clearObservations(){$('obsTable').querySelector('tbody').innerHTML='';$('partographCard').classList.add('hidden');$('resultsCard').classList.add('hidden')}
+/* ========== GRID & OVERLAY HELPERS (from 2.html) ========== */
+const DEFAULT_GRID = {
+	imgW:1912, imgH:3021,
+	time:{left:508, right:1662, hours:12},
+	cervix:{topY:805, botY:1460, min:0, max:10},
+	fhr:{topY:205, botY:700, min:80, max:200},
+	liquorY:730, moldingY:760,
+	con:{topY:1625, botY:1950, min:0, max:5},
+	vitals:{topY:2330, botY:2710, min:60, max:180},
+	tempY:2780
+};
+let GRID = JSON.parse(JSON.stringify(DEFAULT_GRID));
+function getSafeNumber(id, fallback){ const el = $(id); return el && el.value !== '' ? Number(el.value) : fallback; }
+function readCalib(){
+	GRID.cervix.topY = getSafeNumber('cTop', DEFAULT_GRID.cervix.topY);
+	GRID.cervix.botY = getSafeNumber('cBot', DEFAULT_GRID.cervix.botY);
+	GRID.fhr.topY = getSafeNumber('fTop', DEFAULT_GRID.fhr.topY);
+	GRID.fhr.botY = getSafeNumber('fBot', DEFAULT_GRID.fhr.botY);
+	GRID.liquorY = getSafeNumber('liquorY', DEFAULT_GRID.liquorY);
+	GRID.moldingY = getSafeNumber('moldingY', DEFAULT_GRID.moldingY);
+	GRID.con.topY = getSafeNumber('conTop', DEFAULT_GRID.con.topY);
+	GRID.con.botY = getSafeNumber('conBot', DEFAULT_GRID.con.botY);
+	GRID.vitals.topY = getSafeNumber('pTop', DEFAULT_GRID.vitals.topY);
+	GRID.vitals.botY = getSafeNumber('pBot', DEFAULT_GRID.vitals.botY);
+	GRID.time.left = getSafeNumber('xLeft', DEFAULT_GRID.time.left);
+	GRID.time.right = getSafeNumber('xRight', DEFAULT_GRID.time.right);
+	GRID.tempY = getSafeNumber('tY', DEFAULT_GRID.tempY);
+}
+function valToY(val, sectionKey){ const s=GRID[sectionKey]; return s.botY - ((val - s.min) / (s.max - s.min)) * (s.botY - s.topY); }
+function hoursToX(h){ return GRID.time.left + (h / GRID.time.hours) * (GRID.time.right - GRID.time.left); }
+function drawDebugGrid(svg){ if(!window.debugOn) return; const g = document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('opacity','0.4'); for(let i=0;i<=24;i++){ const x=hoursToX(i/2); const l=document.createElementNS('http://www.w3.org/2000/svg','line'); l.setAttribute('x1',x);l.setAttribute('y1',0);l.setAttribute('x2',x);l.setAttribute('y2',GRID.imgH);l.setAttribute('stroke',i%2===0?'#ff0000':'#ff8888');l.setAttribute('stroke-width',i%2===0?2:1); if(i%2===0)l.setAttribute('stroke-dasharray','4 4'); g.appendChild(l); } svg.appendChild(g); }
+function plotPatientInfo(svg){ const g = document.createElementNS('http://www.w3.org/2000/svg','g'); const fontSize = 28; const fontWeight = '700'; const fill = '#881337'; let dateVal = $('admissionDate').value; if(dateVal){ const p=dateVal.split('-'); if(p.length===3) dateVal=p[2]+'/'+p[1]+'/'+p[0]; } const fields = [ { id:'name', val: $('name').value, x:20, y:46 }, { id:'age', val: $('age').value, x:300, y:46 }, { id:'hospital', val: $('hospitalNo').value, x:1600, y:46 }, { id:'adm_date', val: dateVal, x:300, y:130 }, { id:'adm_time', val: $('admissionTime').value, x:925, y:130 } ]; fields.forEach(f => { if(!f.val) return; const txt = document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x', f.x); txt.setAttribute('y', f.y); txt.setAttribute('fill', fill); txt.setAttribute('font-size', String(fontSize)); txt.setAttribute('font-weight', fontWeight); txt.setAttribute('font-family', 'system-ui, Arial, sans-serif'); txt.textContent = f.val; g.appendChild(txt); }); svg.insertBefore(g, svg.firstChild); }
+/* ========== CLASSIC SVG GRAPHS (from 2.html, adapted) ========== */
+function clearSVG(id){const s=$(id);while(s.firstChild)s.removeChild(s.firstChild);return s}
+function E(tag,attrs,text){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!==undefined)e.textContent=text;return e}
+function parseDateTime(str){if(!str) return null; if(str instanceof Date) return str;const parts=String(str).split('T');if(parts.length!==2) return new Date(str);const d=parts[0].split('-').map(Number), t=parts[1].split(':').map(Number);return new Date(d[0], d[1]-1, d[2], t[0], t[1]||0)}
+function num(v){return (v===''||v==null)?null:Number(v)}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
+
+function graphSetup(id,title,opts){
+	const s = clearSVG(id);
+	const W = 1150, R = 35, T = 38, B = 50, H = opts.h || 400;
+	// Align chart 0h with the printed grid's alert line by deriving left margin from GRID.time.left
+	const gridLeftFraction = (GRID && GRID.time && GRID.imgW) ? (GRID.time.left / GRID.imgW) : (508 / 1912);
+	const L = Math.max(20, Math.round(gridLeftFraction * W));
+	const w = W - L - R, h = H - T - B;
+	s.appendChild(E('rect', { x: 0, y: 0, width: W, height: H, fill: '#fcfefe' }));
+	s.appendChild(E('text', { x: 20, y: 24, 'font-size': 16, 'font-weight': '600', fill: '#0b5e57' }, title));
+	for (let j = 0; j <= 10; j++) {
+		const y = T + h - j * h / 10;
+		s.appendChild(E('line', { x1: L, y1: y, x2: W - R, y2: y, stroke: '#e4efef', 'stroke-width': 0.8 }));
+		const v = opts.min + (opts.max - opts.min) * j / 10;
+		const label = opts.decimals !== undefined ? v.toFixed(opts.decimals) : String(Math.round(v));
+		s.appendChild(E('text', { x: L - 8, y: y + 4, 'text-anchor': 'end', 'font-size': 10, fill: '#4f6f73' }, label));
+	}
+		const data = (typeof window.__parto_data !== 'undefined') ? window.__parto_data : getData();
+		const dateStr = $('admissionDate').value, timeStr = $('admissionTime').value, csStr = $('csTime').value;
+		// Compute admitTime so first cervix observation maps to printed alert line starting at 4 cm
+		let admitTime = (dateStr && timeStr) ? parseDateTime(dateStr + 'T' + timeStr) : new Date();
+		if (data && data.length) {
+			const first = data.find(d => d && d.time && d.cervix != null && !isNaN(d.cervix));
+			if (first) {
+				const t0 = parseDateTime(first.time);
+				const c0 = Number(first.cervix);
+				if (t0 && !isNaN(c0)) admitTime = new Date(t0.getTime() - (c0 - 4) * 3600000);
+			}
+		}
+		let csTime = (dateStr && csStr) ? parseDateTime(dateStr + 'T' + csStr) : null;
+	if (csTime && admitTime && csTime <= admitTime) csTime = new Date(csTime.getTime() + 86400000);
+	for (let i = 0; i <= 24; i++) {
+		const x = L + (i / 24) * w;
+		if (i % 2 === 0) {
+			s.appendChild(E('line', { x1: x, y1: T, x2: x, y2: T + h, stroke: '#eef5f5', 'stroke-width': 1 }));
+			if (i % 4 === 0) s.appendChild(E('text', { x: x, y: T + h + 18, 'text-anchor': 'middle', 'font-size': 9, fill: '#4f6f73' }, `${i / 2}h`));
+		} else {
+			s.appendChild(E('line', { x1: x, y1: T, x2: x, y2: T + h, stroke: '#f5fafa', 'stroke-width': 1 }));
+		}
+	}
+	return { s, L, R, T, B, H, W, w, h, data, min: opts.min, max: opts.max, admitTime, csTime };
+}
+function plotSeries(g,key,color,r,dashed){const pts=[];g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.csTime&&ct>g.csTime)return;const v=d[key];if(v==null||!isFinite(v))return;const hours=(ct-g.admitTime)/3600000;const x=g.L+Math.min(hours/12,1)*g.w;const y=g.T+g.h-(v-g.min)/(g.max-g.min)*g.h;pts.push([x,y]);});if(pts.length>1){const poly=E('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:color,'stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});if(dashed)poly.setAttribute('stroke-dasharray',dashed);g.s.appendChild(poly);}pts.forEach(p=>g.s.appendChild(E('circle',{cx:p[0],cy:p[1],r:r||4.5,fill:color,stroke:'#fff','stroke-width':1.2})));return pts;}
+
+function drawCervixGraph(){
+	const g=graphSetup('cervixGraph','Cervical dilatation & descent',{min:0,max:10,h:440});
+	const alertStartCervix = 4;
+	const alertEndCervix = 10;
+	const alertHours = 6;
+	const toY = val => g.T + g.h - ((val - g.min) / (g.max - g.min)) * g.h;
+	const xAtHours = hours => g.L + Math.min(hours / 12, 1) * g.w;
+	const xAlertStart = xAtHours(0);
+	const yAlertStart = toY(alertStartCervix);
+	const xAlertEnd = xAtHours(alertHours);
+	const yAlertEnd = toY(alertEndCervix);
+	const xActionStart = xAtHours(4);
+	const yActionStart = toY(alertStartCervix);
+	const xActionEnd = xAtHours(alertHours + 4);
+	const yActionEnd = toY(alertEndCervix);
+	g.s.appendChild(E('line',{x1:xAlertStart,y1:yAlertStart,x2:xAlertEnd,y2:yAlertEnd,stroke:'#666','stroke-width':2,'stroke-dasharray':'6 4'}));
+	g.s.appendChild(E('line',{x1:xActionStart,y1:yActionStart,x2:xActionEnd,y2:yActionEnd,stroke:'#999','stroke-width':2,'stroke-dasharray':'4 4'}));
+	const cervixPts=[],descentPts=[];g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.csTime&&ct>g.csTime)return;const hours=(ct-g.admitTime)/3600000,x=g.L+Math.min(hours/12,1)*g.w;if(d.cervix!=null){const y=toY(d.cervix);cervixPts.push([x,y]);const sz=6;g.s.appendChild(E('line',{x1:x-sz,y1:y-sz,x2:x+sz,y2:y+sz,stroke:'#0f766e','stroke-width':2.5}));g.s.appendChild(E('line',{x1:x-sz,y1:y+sz,x2:x+sz,y2:y-sz,stroke:'#0f766e','stroke-width':2.5}));}if(d.descent!=null){const y=toY(d.descent);descentPts.push([x,y]);g.s.appendChild(E('circle',{cx:x,cy:y,r:6,fill:'none',stroke:'#b45309','stroke-width':2.5}));}});if(cervixPts.length>1)g.s.appendChild(E('polyline',{points:cervixPts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#0f766e','stroke-width':2}));if(descentPts.length>1)g.s.appendChild(E('polyline',{points:descentPts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#b45309','stroke-width':2,'stroke-dasharray':'4 4'}));g.s.appendChild(E('text',{x:80,y:68,'font-size':10,fill:'#0f766e'},'X = Cervix (cm)'));g.s.appendChild(E('text',{x:80,y:84,'font-size':10,fill:'#b45309'},'O = Descent (/5)'));}
+function drawFhrGraph(){const g=graphSetup('fhrGraph','Fetal heart rate (bpm)',{min:60,max:200,h:340});plotSeries(g,'fhr','#7c3aed',5);g.s.appendChild(E('line',{x1:g.L,y1:g.T+g.h-50/140*g.h,x2:g.L+g.w,y2:g.T+g.h-50/140*g.h,stroke:'#d6c6e6','stroke-width':1,'stroke-dasharray':'4 4'}));}
+function drawConGraph(){const g=graphSetup('conGraph','Contractions / 10 min',{min:0,max:5,h:340});const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');defs.innerHTML='<pattern id="g_dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.5" fill="#dc2626" stroke="none"/></pattern><pattern id="g_lines" width="8" height="8" patternUnits="userSpaceOnUse"><line x1="0" y1="8" x2="8" y2="0" stroke="#dc2626" stroke-width="1.5"/></pattern>';g.s.appendChild(defs);const unitH=g.h/5,blockW=g.w/24,blockH=unitH*0.85;g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.csTime&&ct>g.csTime)return;const con=d.con;if(con==null||con===0)return;const hours=(ct-g.admitTime)/3600000,blockIdx=Math.floor(Math.min(hours/12,1)*24),barX=g.L+blockIdx*blockW;let barW=blockW;if(g.csTime){const dX=g.L+Math.min((g.csTime-g.admitTime)/3600000/12,1)*g.w;if(barX+barW>dX)barW=Math.max(0,dX-barX);}if(barW<=0)return;let fill='#dc2626';const dur=d.duration||'mild';if(dur==='mild')fill='url(#g_dots)';else if(dur==='moderate')fill='url(#g_lines)';for(let j=0;j<clamp(con,0,5);j++){const y=g.T+g.h-j*unitH-unitH/2-blockH/2;g.s.appendChild(E('rect',{x:barX,y:y,width:barW,height:blockH,fill:fill,stroke:'#666','stroke-width':0.5}));}});}
+function drawMaternalGraph(){const g=graphSetup('maternalGraph','Maternal pulse, BP & temperature',{min:60,max:180,h:380});plotSeries(g,'pulse','#b45309',4);g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.csTime&&ct>g.csTime)return;if(!d.bp)return;const parts=String(d.bp).split('/');const sys=num(parts[0]),dia=num(parts[1]);if(sys==null||isNaN(sys))return;const hours=(ct-g.admitTime)/3600000,x=g.L+Math.min(hours/12,1)*g.w;const diaVal=(dia!=null&&!isNaN(dia))?dia:(sys-40);const ySys=g.T+g.h-(clamp(sys,60,180)-g.min)/(g.max-g.min)*g.h,yDia=g.T+g.h-(clamp(diaVal,60,180)-g.min)/(g.max-g.min)*g.h;g.s.appendChild(E('line',{x1:x,y1:ySys,x2:x,y2:yDia,stroke:'#2563eb','stroke-width':3}));[ySys,yDia].forEach(yy=>{g.s.appendChild(E('line',{x1:x-6,y1:yy,x2:x+6,y2:yy,stroke:'#2563eb','stroke-width':3}));});});g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.csTime&&ct>g.csTime)return;if(d.temp==null||isNaN(d.temp)||ct.getMinutes()!==0)return;const hours=(ct-g.admitTime)/3600000,x=g.L+Math.min(hours/12,1)*g.w;g.s.appendChild(E('text',{x:x,y:g.T+g.h-20,'text-anchor':'middle','font-size':9,fill:'#0f766e','font-weight':'600'},d.temp.toFixed(1)+'\u00B0'));});g.s.appendChild(E('text',{x:80,y:68,'font-size':10,fill:'#b45309'},'\u25CF Pulse'));g.s.appendChild(E('text',{x:80,y:84,'font-size':10,fill:'#2563eb'},'\u2191\u2193 BP (mmHg)'));}
+function updateSummary(){const data=getData();if(!data.length){$('summary').innerHTML='<em>No observations yet.</em>';return;}const last=data[data.length-1];const dateStr=$('admissionDate').value,timeStr=$('admissionTime').value,csStr=$('csTime').value;const admitTime=(dateStr&&timeStr)?parseDateTime(dateStr+'T'+timeStr):null;let csTime=(dateStr&&csStr)?parseDateTime(dateStr+'T'+csStr):null;if(csTime&&admitTime&&csTime<=admitTime)csTime=new Date(csTime.getTime()+86400000);let laborDuration='';if(csTime&&admitTime){const hrs=(csTime-admitTime)/3600000;const h=Math.floor(hrs),m=Math.round((hrs-h)*60);laborDuration=h+'h '+m+'m';}let html='<strong>Patient:</strong> '+($('name').value||'N/A')+' | Age '+($('age').value||'N/A')+' | G'+($('gravida').value||'N/A')+' P'+($('para').value||'N/A')+'<br>';html+='<strong>Hospital #:</strong> '+($('hospitalNo').value||'N/A')+'<br><strong>Admission:</strong> '+(dateStr||'N/A')+' '+(timeStr||'N/A')+'<br><strong>ROM:</strong> '+($('romTime').value||'N/A')+'<br>';if(laborDuration)html+='<strong>Labour until CS:</strong> '+laborDuration+'<br>';html+='<strong>Observations:</strong> '+data.length+' entries<br><strong>Last cervix:</strong> '+(last.cervix!=null?last.cervix+' cm':'N/A')+' | <strong>Last descent:</strong> '+(last.descent!=null?last.descent+'/5':'N/A')+'<br><strong>Last FHR:</strong> '+(last.fhr!=null?last.fhr+' bpm':'N/A')+' | <strong>Last pulse:</strong> '+(last.pulse!=null?last.pulse:'N/A')+' | <strong>Last BP:</strong> '+(last.bp||'N/A');$('summary').innerHTML=html}
+function drawAllClassic(){drawCervixGraph();drawFhrGraph();drawConGraph();drawMaternalGraph();updateSummary();}
+function drawPartograph(){
+	const svg = $('partoOverlay');
+	if(!svg) return;
+	while(svg.firstChild) svg.removeChild(svg.firstChild);
+	readCalib();
+
+	const data = getData();
+	plotPatientInfo(svg);
+
+	const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+	defs.innerHTML = '<pattern id="con_dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.5" fill="#dc2626" stroke="none"/></pattern><pattern id="con_lines" width="8" height="8" patternUnits="userSpaceOnUse"><line x1="0" y1="8" x2="8" y2="0" stroke="#dc2626" stroke-width="1.5"/></pattern>';
+	svg.appendChild(defs);
+
+	if(!data.length){ drawDebugGrid(svg); return; }
+
+		const dateStr = $('admissionDate').value, timeStr = $('admissionTime').value;
+		// Compute admitTime so the first cervical observation maps to the printed alert line starting at 4 cm
+		let admitTime = (dateStr && timeStr) ? parseDateTime(dateStr+'T'+timeStr) : new Date();
+		const firstObs = data.find(d => d && d.time && d.cervix != null && !isNaN(d.cervix));
+		if (firstObs) {
+			const t0 = parseDateTime(firstObs.time);
+			const c0 = Number(firstObs.cervix);
+			if (t0 && !isNaN(c0)) admitTime = new Date(t0.getTime() - (c0 - 4) * 3600000);
+		}
+		let csTime = $('csTime').value ? parseDateTime(dateStr+'T'+$('csTime').value) : null;
+		if(csTime && admitTime && csTime <= admitTime) csTime = new Date(csTime.getTime() + 86400000);
+
+		const admitC = num($('admitCervix').value) || 4;
+		const alertHours = 10 - admitC;
+		const yAlertStart = valToY(admitC, 'cervix'), yAlertEnd = valToY(10, 'cervix');
+
+		const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+		// Do not draw overlay alert/action lines; rely on the printed grid's alert line
+
+	// time ticks and labels
+	try{
+		const maxHalf = Math.ceil(GRID.time.hours * 2);
+		for(let half=0; half<=maxHalf; half++){
+			const h = half/2, xTick = hoursToX(h);
+			const t1 = document.createElementNS('http://www.w3.org/2000/svg','line');
+			t1.setAttribute('x1', xTick); t1.setAttribute('x2', xTick); t1.setAttribute('y1', GRID.cervix.botY+6); t1.setAttribute('y2', GRID.cervix.botY+14); t1.setAttribute('stroke', '#e4efef'); t1.setAttribute('stroke-width', '1'); g.appendChild(t1);
+			if(half%2===0){ const labelTime = new Date(admitTime.getTime() + h*3600000); const txt = document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x', xTick); txt.setAttribute('y', GRID.cervix.botY+34); txt.setAttribute('fill', '#4f6f73'); txt.setAttribute('font-size','16'); txt.setAttribute('font-weight','700'); txt.setAttribute('text-anchor','middle'); txt.textContent = pad(labelTime.getHours())+':'+pad(labelTime.getMinutes()); g.appendChild(txt); }
+		}
+	}catch(e){}
+
+	const validData = data.filter(d=>{ if(!d.time) return false; const ct = parseDateTime(d.time); if(!ct) return false; if(csTime && ct>csTime) return false; return true; });
+	const cervixPts = [], descentPts = [], fhrPts = [], pulsePts = [];
+
+	validData.forEach(d=>{
+		const currentTime = parseDateTime(d.time); const h = (currentTime - admitTime) / 3600000; if(h<0||h>GRID.time.hours) return; const x = hoursToX(h);
+		if(d.cervix!=null && !isNaN(d.cervix)){ const y = valToY(clamp(d.cervix,0,10),'cervix'); cervixPts.push({x,y}); const sz=12; const l1=document.createElementNS('http://www.w3.org/2000/svg','line'); l1.setAttribute('x1',x-sz);l1.setAttribute('y1',y-sz);l1.setAttribute('x2',x+sz);l1.setAttribute('y2',y+sz);l1.setAttribute('stroke','#0f766e');l1.setAttribute('stroke-width','5'); g.appendChild(l1); const l2=document.createElementNS('http://www.w3.org/2000/svg','line'); l2.setAttribute('x1',x-sz);l2.setAttribute('y1',y+sz);l2.setAttribute('x2',x+sz);l2.setAttribute('y2',y-sz);l2.setAttribute('stroke','#0f766e');l2.setAttribute('stroke-width','5'); g.appendChild(l2); }
+		if(d.descent!=null && !isNaN(d.descent)){ const y = valToY(clamp(d.descent,0,5),'cervix'); descentPts.push({x,y}); const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','10');c.setAttribute('fill','none');c.setAttribute('stroke','#b45309');c.setAttribute('stroke-width','5'); g.appendChild(c); }
+		if(d.fhr!=null && !isNaN(d.fhr)){ const y = valToY(clamp(d.fhr,80,200),'fhr'); fhrPts.push({x,y}); const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','8');c.setAttribute('fill','#7c3aed'); g.appendChild(c); }
+
+		if(d.con!=null && !isNaN(d.con) && d.con>0){ const s=GRID.con, unitH=(s.botY-s.topY)/5, blockW=(GRID.time.right-GRID.time.left)/24, blockH=unitH*0.85; const blockIdx=Math.floor(h*2), barX=GRID.time.left+blockIdx*blockW; let barW=blockW; if(csTime){ const dX = hoursToX((csTime - admitTime)/3600000); if(barX+barW>dX) barW = Math.max(0, dX - barX); } if(barW>0){ let fill='#dc2626'; const dur=d.duration||'mild'; if(dur==='mild') fill='url(#con_dots)'; else if(dur==='moderate') fill='url(#con_lines)'; for(let j=0;j<clamp(d.con,0,5);j++){ const y = s.botY - j*unitH - unitH/2 - blockH/2; const r=document.createElementNS('http://www.w3.org/2000/svg','rect'); r.setAttribute('x',barX); r.setAttribute('y',y); r.setAttribute('width',barW); r.setAttribute('height',blockH); r.setAttribute('fill',fill); r.setAttribute('stroke','#991b1b'); r.setAttribute('stroke-width','0.5'); g.appendChild(r); } } }
+
+		if(d.pulse!=null && !isNaN(d.pulse)){ const y = valToY(clamp(d.pulse,60,180),'vitals'); pulsePts.push({x,y}); const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','8');c.setAttribute('fill','#b45309'); g.appendChild(c); }
+
+		if(d.bp){ const parts=String(d.bp).split('/'); const sys=num(parts[0]), dia=num(parts[1]); if(sys!=null&&!isNaN(sys)){ const ySys=valToY(clamp(sys,60,180),'vitals'), diaVal=(dia!=null&&!isNaN(dia))?dia:(sys-40), yDia=valToY(clamp(diaVal,60,180),'vitals'); const l=document.createElementNS('http://www.w3.org/2000/svg','line'); l.setAttribute('x1',x);l.setAttribute('y1',ySys);l.setAttribute('x2',x);l.setAttribute('y2',yDia);l.setAttribute('stroke','#2563eb');l.setAttribute('stroke-width','4'); g.appendChild(l); [ySys,yDia].forEach(yy=>{ const hr=document.createElementNS('http://www.w3.org/2000/svg','line'); hr.setAttribute('x1',x-8);hr.setAttribute('y1',yy);hr.setAttribute('x2',x+8);hr.setAttribute('y2',yy);hr.setAttribute('stroke','#2563eb');hr.setAttribute('stroke-width','4'); g.appendChild(hr); }); } }
+
+		const halfBlockW=(GRID.time.right-GRID.time.left)/24, halfBlockIdx=Math.floor(h*2), halfBlockCenterX=GRID.time.left+(halfBlockIdx+0.5)*halfBlockW;
+		const hourWidth=(GRID.time.right-GRID.time.left)/GRID.time.hours, hourIdx=Math.floor(h), hourCenterX=GRID.time.left+(hourIdx+0.5)*hourWidth;
+
+		if(d.temp!=null&&!isNaN(d.temp)&&currentTime.getMinutes()===0){ if(!(csTime&&hourCenterX>hoursToX((csTime-admitTime)/3600000))){ const txt=document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',hourCenterX);txt.setAttribute('y',GRID.tempY);txt.setAttribute('fill','#0f766e');txt.setAttribute('font-size','26');txt.setAttribute('text-anchor','middle');txt.setAttribute('font-weight','700');txt.textContent=Number(d.temp).toFixed(1)+'\u00B0'; g.appendChild(txt); } }
+		if(!(csTime&&currentTime>csTime)&&(d.liquor||( $('romTime').value && currentTime<parseDateTime(dateStr+'T'+$('romTime').value )))){ const liquorVal=d.liquor||( $('romTime').value && currentTime<parseDateTime(dateStr+'T'+$('romTime').value )?'I':''); if(liquorVal && !(csTime && halfBlockCenterX>hoursToX((csTime-admitTime)/3600000))){ const txt=document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',halfBlockCenterX);txt.setAttribute('y',GRID.liquorY);txt.setAttribute('fill','#0f766e');txt.setAttribute('font-size','22');txt.setAttribute('text-anchor','middle');txt.setAttribute('font-weight','700');txt.textContent=liquorVal; g.appendChild(txt); } }
+		if(!(csTime&&currentTime>csTime)&&d.molding&&(!( $('romTime').value )|| currentTime>=parseDateTime(dateStr+'T'+$('romTime').value ))){ if(!(csTime&&halfBlockCenterX>hoursToX((csTime-admitTime)/3600000))){ const txt=document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',halfBlockCenterX);txt.setAttribute('y',GRID.moldingY);txt.setAttribute('fill','#b45309');txt.setAttribute('font-size','22');txt.setAttribute('text-anchor','middle');txt.setAttribute('font-weight','700');txt.textContent=d.molding; g.appendChild(txt); } }
+	});
+
+	[{pts:cervixPts,color:'#0f766e',width:4},{pts:descentPts,color:'#b45309',width:3,dash:'8 6'},{pts:fhrPts,color:'#7c3aed',width:3},{pts:pulsePts,color:'#b45309',width:3}].forEach(spec=>{
+		if(spec.pts.length>1){ const p=document.createElementNS('http://www.w3.org/2000/svg','polyline'); p.setAttribute('points',spec.pts.map(pt=>pt.x+','+pt.y).join(' ')); p.setAttribute('fill','none'); p.setAttribute('stroke',spec.color); p.setAttribute('stroke-width',spec.width); p.setAttribute('opacity','0.85'); if(spec.dash) p.setAttribute('stroke-dasharray',spec.dash); g.insertBefore(p,g.firstChild); }
+	});
+
+	// CS vertical marker
+	if(csTime){ const cx = hoursToX((csTime - admitTime)/3600000); g.appendChild(E('line',{x1:cx,y1:0,x2:cx,y2:GRID.imgH,stroke:'#dc2626','stroke-width':6,'opacity':0.9})); }
+
+	svg.appendChild(g);
+	drawDebugGrid(svg);
+}
+function debounce(fn,delay){let t;const f=function(...args){clearTimeout(t);t=setTimeout(()=>fn.apply(this,args),delay);};f.cancel=function(){clearTimeout(t);};return f;}
+const debouncedUpdate=debounce(()=>{ try{ window.__parto_data = getData(); }catch(e){ window.__parto_data = undefined; } try{ drawAll(); }finally{ try{ delete window.__parto_data }catch(e){} } },300);
+
+function _runSequence(seq, idx){ if(idx>=seq.length) return; try{ seq[idx](); }catch(e){ console.error(e); } const next = idx+1; if(next<seq.length) setTimeout(()=>_runSequence(seq,next), 24); }
+
+function drawAll(){
+	try{ window.__parto_data = getData(); }catch(e){ window.__parto_data = undefined; }
+	const dataLen = (window.__parto_data && window.__parto_data.length) || 0;
+	const seq = [ drawPartograph, drawCervixGraph, drawFhrGraph, drawConGraph, drawMaternalGraph, updateSummary ];
+	if(dataLen > 30){ // staged drawing to avoid blocking
+		_runSequence(seq, 0);
+	} else {
+		try{ seq.forEach(fn=>fn()); }catch(e){ console.error(e); }
+	}
+	try{ delete window.__parto_data }catch(e){}
+}
+
+function resetForm(){
+  const today = new Date().toISOString().slice(0,10);
+  document.querySelectorAll('input').forEach(i=>{if(i.type==='button')return;i.value=''});
+  $('admissionDate').value = today;
+  $('admitCervix').value='';
+  $('admitDescent').value='';
+  $('scenario').value='distress';
+  updateScenarioNote();
+  clearObservations();
+}
+window.addEventListener('DOMContentLoaded', () => {
+  if (!$('admissionDate').value) {
+    $('admissionDate').value = new Date().toISOString().slice(0,10);
+  }
+});
+
+bindScenarioTimeInputs();
+function saveJSON(){const obj={patient:{name:$('name').value,age:$('age').value,gravida:$('gravida').value,para:$('para').value,hospitalNo:$('hospitalNo').value},admission:{date:$('admissionDate').value,time:$('admissionTime').value,romTime:$('romTime').value,csTime:$('csTime').value},scenario:$('scenario').value,observations:getData()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));a.download='complicated-case.json';a.click();URL.revokeObjectURL(a.href)}
+function savePartogramWithReport(){
+  const wrap = document.getElementById('partoWrap');
+  const summaryEl = document.getElementById('summary');
+  if (!wrap) return;
+  const loadScript = src => new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[src="' + src + '"]');
+    if (existing) { existing.addEventListener('load', resolve, {once:true}); return; }
+    const script = document.createElement('script');
+    script.src = src; script.onload = resolve; script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  (async () => {
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      const clone = wrap.cloneNode(true);
+      clone.style.cssText = 'position:fixed;left:-100000px;top:0;width:1912px;height:3021px;max-width:none;z-index:-1;';
+      document.body.appendChild(clone);
+      const partCanvas = await html2canvas(clone, {useCORS:true, backgroundColor:'#fff', scale:1, width:1912, height:3021});
+      clone.remove();
+
+      const pdf = new window.jspdf.jsPDF({orientation:'portrait', unit:'px', format:'a4', compress:true});
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgData = partCanvas.toDataURL('image/jpeg', .95);
+      const imgWidth = pageWidth - 24;
+      const imgHeight = (partCanvas.height * imgWidth) / partCanvas.width;
+      const page1Height = Math.min(imgHeight, pageHeight - 26);
+      pdf.addImage(imgData, 'JPEG', 12, 12, imgWidth, page1Height, undefined, 'FAST');
+
+      const reportTitle = 'Case summary';
+      const reportText = (summaryEl ? summaryEl.innerText : '').trim() || 'No observations yet.';
+      const reportLines = pdf.splitTextToSize(reportText, pageWidth - 30);
+      pdf.addPage();
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(reportTitle, 14, 22);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(11);
+      pdf.text(reportLines, 14, 36);
+      pdf.save('partogram_with_report_' + ($('hospitalNo').value || 'case') + '.pdf');
+    } catch (error) {
+      alert('Unable to create the combined PDF. Check your internet connection and try again.');
+      console.error(error);
+    }
+  })();
+}
+function downloadGridPdf(){
+  const wrap = document.getElementById('partoWrap');
+  if (!wrap) return;
+  const width = 1912;
+  const height = 3021;
+	const loadScript = src => new Promise((resolve, reject) => {
+		const existing = document.querySelector('script[src="' + src + '"]');
+		if (existing) { existing.addEventListener('load', resolve, {once:true}); return; }
+		const script = document.createElement('script');
+		script.src = src; script.onload = resolve; script.onerror = reject;
+		document.head.appendChild(script);
+	});
+	(async () => {
+		try {
+			await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+			await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+			const clone = wrap.cloneNode(true);
+			clone.style.cssText = 'position:fixed;left:-100000px;top:0;width:' + width + 'px;height:' + height + 'px;max-width:none;z-index:-1;';
+			document.body.appendChild(clone);
+			const canvas = await html2canvas(clone, {useCORS:true, backgroundColor:'#fff', scale:1, width, height});
+			clone.remove();
+			const pdf = new window.jspdf.jsPDF({orientation:'portrait', unit:'px', format:[width, height], compress:true});
+			pdf.addImage(canvas.toDataURL('image/jpeg', .95), 'JPEG', 0, 0, width, height, undefined, 'FAST');
+			pdf.save('complicated-case-partograph.pdf');
+		} catch (error) {
+			alert('Unable to create the PDF. Check your internet connection and try again.');
+			console.error(error);
+		}
+	})();
+}
+function downloadGridImage(){
+	const wrap = document.getElementById('partoWrap');
+	if (!wrap) return;
+	const width = 1912, height = 3021;
+	const loadScript = src => new Promise((resolve, reject) => {
+		const existing = document.querySelector('script[src="' + src + '"]');
+		if (existing) { if (window.html2canvas) resolve(); else existing.addEventListener('load', resolve, {once:true}); return; }
+		const script = document.createElement('script');
+		script.src = src; script.onload = resolve; script.onerror = reject;
+		document.head.appendChild(script);
+	});
+	(async () => {
+		try {
+			await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+			const clone = wrap.cloneNode(true);
+			clone.style.cssText = 'position:fixed;left:-100000px;top:0;width:' + width + 'px;height:' + height + 'px;max-width:none;z-index:-1;';
+			document.body.appendChild(clone);
+			const canvas = await html2canvas(clone, {useCORS:true, backgroundColor:'#fff', scale:1, width, height});
+			clone.remove();
+			canvas.toBlob(blob => {
+				const link = document.createElement('a');
+				link.href = URL.createObjectURL(blob);
+				link.download = 'complicated-case-partograph.png';
+				link.click();
+				URL.revokeObjectURL(link.href);
+			}, 'image/png');
+		} catch (error) {
+			alert('Unable to create the image. Check your internet connection and try again.');
+			console.error(error);
+		}
+	})();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WHO Partogram Guide</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#0f766e;--deep:#115e59;--ink:#183236;--muted:#587174;--bg:#f2f7f6;--card:#fff;--line:#cfe0df;--soft:#e7f4f2;--amber:#fff8e7;--amber-line:#f3d38a;--rose:#fff1f2;--rose-line:#fecdd3}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55;padding-bottom:42px}.page-footer{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(255,255,255,.86);backdrop-filter:blur(2px);border:1px solid rgba(15,118,110,.12);box-shadow:0 8px 20px rgba(15,118,110,.08);padding:7px 22px;border-radius:999px;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.2px;white-space:nowrap;z-index:20}
+header{background:linear-gradient(135deg,#0b5e57,#0f766e);color:#fff;padding:18px 22px;position:sticky;top:0;z-index:10;box-shadow:0 3px 18px rgba(22,70,70,.2);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}header h1{font-size:21px;font-weight:700}header p{font-size:12px;opacity:.88}.header-actions{display:flex;gap:8px}.header-actions button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.13);color:#fff;padding:7px 13px;border-radius:8px;cursor:pointer}
+main{max-width:1280px;margin:auto;padding:18px}.intro{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}.intro h2{color:var(--deep);font-size:21px;margin-bottom:7px}.intro p{color:var(--muted);max-width:900px}.notice{margin-top:13px;padding:11px 14px;border:1px solid var(--amber-line);background:var(--amber);border-radius:9px;color:#7c4a03;font-size:13px}.section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px}.section h2{color:var(--deep);font-size:18px;margin-bottom:13px}.section h3{font-size:14px;color:var(--deep);margin-bottom:4px}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.step{background:var(--soft);border-radius:10px;padding:12px}.step strong{display:block;color:var(--deep);font-size:13px;margin-bottom:3px}.step span{font-size:12px;color:var(--muted)}.walkthrough{display:grid;gap:11px}.walk-step{display:grid;grid-template-columns:42px 1fr;gap:12px;border:1px solid var(--line);border-radius:10px;padding:13px 14px;background:#fcfefe}.walk-number{width:32px;height:32px;border-radius:50%;background:var(--p);color:#fff;display:grid;place-items:center;font-weight:700}.walk-step p{font-size:12px;color:var(--muted);margin-top:4px}.walk-step b{color:var(--ink)}.field-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px}.guide{border:1px solid var(--line);border-radius:10px;padding:13px 14px;background:#fcfefe}.guide p{font-size:12px;color:var(--muted);margin-top:4px}.guide b{color:var(--ink)}.tag{display:inline-block;background:var(--soft);color:var(--deep);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;margin-bottom:5px}.hint-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.hint{padding:13px 14px;border-radius:10px;background:var(--soft);border-left:4px solid var(--p)}.hint h3{margin-bottom:5px}.hint p{font-size:12px;color:var(--muted)}.benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.benefit{padding:13px 15px;border-radius:10px;background:#f8fbfb;border:1px solid var(--line)}.benefit strong{display:block;color:var(--deep);font-size:13px;margin-bottom:3px}.benefit p{font-size:12px;color:var(--muted)}ul{padding-left:19px;color:var(--muted);font-size:13px}li+li{margin-top:6px}.alert{background:var(--rose);border:1px solid var(--rose-line);border-radius:10px;padding:13px 15px;color:#881337;font-size:13px}.footer-note{color:var(--muted);font-size:11px;text-align:center;margin-top:18px}@media(max-width:850px){.steps{grid-template-columns:repeat(2,1fr)}.hint-grid,.benefits{grid-template-columns:1fr}.field-grid{grid-template-columns:1fr}}@media(max-width:520px){main{padding:10px}.section,.intro{padding:15px}.steps{grid-template-columns:1fr}.walk-step{grid-template-columns:1fr}header h1{font-size:18px}}
+@media print{header,.no-print{display:none!important}body{background:#fff}.section,.intro{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+<div><h1>WHO Partogram Guide</h1><div class="author">By Dr.Hamdy</div></div>
+<div class="header-actions no-print"><button onclick="saveAsPdf()">Save as PDF</button><button onclick="location.href='1.html'">Back</button></div>
+</header>
+<main>
+<section class="intro">
+<h2>A practical guide for the labour record</h2>
+<p>Complete the partogram from the clinical record as labour progresses. Plot observations at the time they are taken, keep entries in chronological order, and record the actual value rather than a guess.</p>
+<div class="notice"><strong>Clinical safety:</strong> This is an educational documentation guide. Use the current WHO form, local policy, senior review, and emergency pathways for clinical decisions. A partogram supports assessment; it does not replace bedside assessment.</div>
+</section>
+<section class="section">
+<h2>Step-by-step: completing the partogram</h2>
+<div class="walkthrough">
+<div class="walk-step"><div class="walk-number">1</div><div><h3>Prepare the form</h3><p>Use the current approved WHO or local partogram. Confirm the patient identity and make sure the date, time, units, and chart legend are visible before writing.</p></div></div>
+<div class="walk-step"><div class="walk-number">2</div><div><h3>Complete the patient header</h3><p>Write the <b>name, age, gravida, para, and hospital number</b> from the clinical record. Check these identifiers against the patient before continuing.</p></div></div>
+<div class="walk-step"><div class="walk-number">3</div><div><h3>Set the time reference</h3><p>Enter the <b>admission date and time</b>. Treat this as the chart's time zero. Record the <b>ROM time</b> separately if membranes have ruptured, and note whether the event was spontaneous or artificial when required.</p></div></div>
+<div class="walk-step"><div class="walk-number">4</div><div><h3>Record baseline examination</h3><p>Enter the admission <b>cervical dilatation in cm</b> and <b>descent in fifths</b>. Use the documented examination result and record the examiner or examination time according to local policy.</p></div></div>
+<div class="walk-step"><div class="walk-number">5</div><div><h3>Record treatment already started</h3><p>Write the <b>IV fluid and rate</b>. If oxytocin is running, record its concentration and infusion rate exactly as prescribed. Add analgesia or other interventions in the notes or designated treatment area.</p></div></div>
+<div class="walk-step"><div class="walk-number">6</div><div><h3>Start one observation row</h3><p>At the time of each assessment, find the matching time on the horizontal axis and use one row or vertical time position for that assessment. Do not move a value to make it fit a preferred pattern.</p></div></div>
+<div class="walk-step"><div class="walk-number">7</div><div><h3>Plot fetal heart rate</h3><p>Enter the measured <b>FHR in bpm</b> in the fetal-heart-rate section at the correct time. Use the form's marker and connect sequential points only when the form instructs you to do so.</p></div></div>
+<div class="walk-step"><div class="walk-number">8</div><div><h3>Plot cervical dilatation and descent</h3><p>Plot cervical dilatation with the form's <b>X</b> marker and descent with the form's <b>O</b> marker. Connect each series in time order. Keep the two scales separate: cervical dilatation is in cm; descent is in fifths.</p></div></div>
+<div class="walk-step"><div class="walk-number">9</div><div><h3>Fill liquor and moulding</h3><p>Use the form legend to enter the liquor symbol and the moulding grade found on examination. Record a blank only when no observation was made; do not use a blank to mean normal.</p></div></div>
+<div class="walk-step"><div class="walk-number">10</div><div><h3>Count contractions</h3><p>Count the number of contractions in a <b>10-minute window</b>. Fill the half-hour column that contains the observation and use the form's shading or pattern to show contraction duration.</p></div></div>
+<div class="walk-step"><div class="walk-number">11</div><div><h3>Plot maternal observations</h3><p>Plot <b>pulse</b> on the maternal pulse scale. Plot both <b>systolic and diastolic BP</b> as shown on the form. Add the measured <b>temperature</b> at the required hourly position, using the actual measurement time.</p></div></div>
+<div class="walk-step"><div class="walk-number">12</div><div><h3>Document changes and decisions</h3><p>Record membrane rupture, examinations, medication or oxytocin changes, analgesia, fluid changes, reviews, transfer, operative decisions, delivery, or CS time in the appropriate area and clinical notes.</p></div></div>
+<div class="walk-step"><div class="walk-number">13</div><div><h3>Review before signing</h3><p>Check that every entry has the correct time and unit, trends are connected in order, abnormal findings are acknowledged, missing critical observations are followed up, and the chart is signed according to local policy.</p></div></div>
+</div>
+</section>
+<section class="section">
+<h2>Recommended workflow</h2>
+<div class="steps"><div class="step"><strong>1. Identify</strong><span>Write patient, admission, parity, and hospital details.</span></div><div class="step"><strong>2. Set the clock</strong><span>Use one admission date and time consistently for every row.</span></div><div class="step"><strong>3. Observe</strong><span>Record fetal, labour, and maternal observations at the bedside.</span></div><div class="step"><strong>4. Review</strong><span>Connect trends, check the whole patient, and escalate concerns.</span></div></div>
+</section>
+<section class="section">
+<h2>Patient and admission fields</h2>
+<div class="field-grid">
+<div class="guide"><span class="tag">IDENTITY</span><h3>Name, age, gravida, para</h3><p>Copy the patient identifiers from the chart or wristband. <b>Gravida</b> is the number of pregnancies; <b>para</b> records previous births according to local documentation convention.</p></div>
+<div class="guide"><span class="tag">REFERENCE</span><h3>Hospital number</h3><p>Use the official hospital or medical record number. Check it against the patient record before plotting.</p></div>
+<div class="guide"><span class="tag">START TIME</span><h3>Admission date and time</h3><p>Enter the agreed reference time used by the team. All plotted hours must be calculated from this same starting point.</p></div>
+<div class="guide"><span class="tag">MEMBRANES</span><h3>ROM time</h3><p>Record the time membranes ruptured when known. Document whether the time is spontaneous, artificial, or uncertain according to local practice.</p></div>
+<div class="guide"><span class="tag">BASELINE</span><h3>Cervix at admission</h3><p>Enter the first documented cervical dilatation in centimetres. Use the examination finding, not an estimate based on labour duration.</p></div>
+<div class="guide"><span class="tag">BASELINE</span><h3>Descent at admission</h3><p>Record fetal head descent in fifths palpable above the pelvic brim. Keep the scale convention consistent throughout the chart.</p></div>
+<div class="guide"><span class="tag">TREATMENT</span><h3>Fluids and oxytocin</h3><p>Record fluid type and rate. If oxytocin is used, include concentration and drops or milliunits per minute as required by the local form.</p></div>
+<div class="guide"><span class="tag">OUTCOME</span><h3>Delivery time or time of CS</h3><p>Enter the actual time of birth or caesarean section. Observations after that event should not be plotted as intrapartum observations.</p></div>
+</div>
+</section>
+<section class="section">
+<h2>How to fill the plotted areas</h2>
+<div class="field-grid">
+<div class="guide"><span class="tag">FETAL HEART RATE</span><h3>FHR, in beats per minute</h3><p>Plot each auscultated or monitored FHR value against the correct time. Use the trend with the clinical assessment; investigate persistent abnormalities according to local protocol.</p></div>
+<div class="guide"><span class="tag">CERVIX</span><h3>Cervical dilatation, X</h3><p>Plot the examination result in centimetres at the examination time and connect sequential points. The X marks cervical change; do not move a point to make the line look smoother.</p></div>
+<div class="guide"><span class="tag">DESCENT</span><h3>Descent, O</h3><p>Plot descent in fifths using the form's scale and use O markers. Interpret it alongside position, station, moulding, contractions, and the examination findings.</p></div>
+<div class="guide"><span class="tag">LIQUOR</span><h3>Liquor</h3><p>Enter the locally approved symbols for clear, meconium-stained, blood-stained, or absent liquor. Use the legend on the form and document uncertainty in the notes.</p></div>
+<div class="guide"><span class="tag">MOULDING</span><h3>Moulding</h3><p>Record the degree found on vaginal examination using the form's symbols, such as 0, +, ++, or +++. Increasing moulding needs clinical assessment in context.</p></div>
+<div class="guide"><span class="tag">CONTRACTIONS</span><h3>Contractions per 10 minutes</h3><p>Count contractions in a 10-minute window and fill the matching half-hour cell. Use shading or patterns to show duration according to the form legend.</p></div>
+<div class="guide"><span class="tag">PULSE</span><h3>Maternal pulse</h3><p>Plot pulse at the time measured on the maternal vitals section. Look for a trend and compare it with pain, temperature, bleeding, hydration, and blood pressure.</p></div>
+<div class="guide"><span class="tag">BLOOD PRESSURE</span><h3>BP, systolic/diastolic</h3><p>Plot both systolic and diastolic values at the observation time, connected as shown on the form. Record the actual cuff reading and repeat or escalate according to local protocol.</p></div>
+<div class="guide"><span class="tag">TEMPERATURE</span><h3>Temperature</h3><p>Plot the measured temperature at the correct hourly position when the form requires hourly plotting. Note the route and timing in the clinical record if relevant.</p></div>
+</div>
+</section>
+<section class="section">
+<h2>Useful completion hints</h2>
+<div class="hint-grid"><div class="hint"><h3>Use actual times</h3><p>Do not backdate a point to the nearest grid line. The time of the examination or measurement is the time to plot.</p></div><div class="hint"><h3>Make units visible</h3><p>Check cm, bpm, minutes, degrees, mmHg, and the contraction counting window before accepting an entry.</p></div><div class="hint"><h3>Keep the trend honest</h3><p>Connect observations in order, but never redraw a point because the pattern looks unusual.</p></div><div class="hint"><h3>Annotate events</h3><p>Mark examinations, membrane rupture, analgesia, oxytocin changes, transfer, review, and operative decisions in the notes.</p></div><div class="hint"><h3>Check missing data</h3><p>A blank cell means no documented observation, not a normal result. Follow up missing critical observations.</p></div><div class="hint"><h3>Review the whole picture</h3><p>Compare fetal status, cervical change, contractions, maternal observations, and treatment rather than relying on one line.</p></div></div>
+</section>
+<section class="section">
+<h2>Benefits of a well-completed partogram</h2>
+<div class="benefits"><div class="benefit"><strong>Shared situational awareness</strong><p>The team can see labour progress and recent observations in one place.</p></div><div class="benefit"><strong>Earlier recognition of change</strong><p>Trends may make deterioration, poor progress, or treatment effects easier to notice.</p></div><div class="benefit"><strong>Clear handover</strong><p>A chronological record supports concise communication during shift changes or transfer.</p></div><div class="benefit"><strong>Better documentation</strong><p>Time-stamped observations and interventions create a clearer clinical record.</p></div></div>
+</section>
+<section class="section">
+<h2>When to pause and seek review</h2>
+<div class="alert">Seek timely senior or emergency review when there is fetal compromise, maternal instability, significant bleeding, severe hypertension, fever or suspected infection, obstructed labour, concerning moulding, abnormal labour progress, or any change that does not fit the clinical picture. Follow local escalation pathways.</div>
+</section>
+<p class="footer-note">Educational reference only. Always use the current approved WHO or local partogram and clinical protocol.</p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+async function saveAsPdf(){
+	const button=document.querySelector('.header-actions button');
+	const originalText=button.textContent;
+	button.disabled=true;
+	button.textContent='Creating PDF...';
+	const controls=[...document.querySelectorAll('.no-print')];
+	controls.forEach(element=>{element.dataset.pdfDisplay=element.style.display;element.style.display='none'});
+	try{
+		const canvas=await html2canvas(document.querySelector('main'),{scale:1.5,useCORS:true,backgroundColor:'#f2f7f6'});
+		const {jsPDF}=window.jspdf;
+		const pdf=new jsPDF('p','mm','a4');
+		const pageWidth=210,pageHeight=297,margin=8;
+		const imageWidth=pageWidth-margin*2;
+		const imageHeight=canvas.height*imageWidth/canvas.width;
+		let offset=0,page=0;
+		while(offset<imageHeight){
+			if(page>0)pdf.addPage();
+			pdf.addImage(canvas.toDataURL('image/jpeg',.92),'JPEG',margin,margin-offset,imageWidth,imageHeight);
+			offset+=pageHeight-margin*2;
+			page++;
+		}
+		pdf.save('WHO-Partogram-Guide.pdf');
+	}catch(error){
+		alert('PDF creation failed. Please try again.');
+		console.error(error);
+	}finally{
+		controls.forEach(element=>{element.style.display=element.dataset.pdfDisplay||'';delete element.dataset.pdfDisplay});
+		button.disabled=false;
+		button.textContent=originalText;
+	}
+}
+</script>
+<div class="page-footer">وفقنا الله وإياكم</div>
+</body>
+</html>

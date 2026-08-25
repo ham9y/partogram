@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WHO Partograph - Standardized Plotting</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#0f766e;--ink:#1a2e33;--muted:#4f6f73;--bg:#f2f7f6;--card:#fff;--line:#cfdfdf;--soft:#e6f3f1}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.5;padding:0 0 40px}.page-footer{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);background:rgba(255,255,255,.86);backdrop-filter:blur(2px);border:1px solid rgba(15,118,110,.12);box-shadow:0 8px 20px rgba(15,118,110,.08);padding:7px 22px;border-radius:999px;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.2px;white-space:nowrap;z-index:20}
+header{background:linear-gradient(135deg,#0b5e57,#0f766e);color:#fff;padding:14px 20px;position:sticky;top:0;z-index:20;box-shadow:0 3px 18px rgba(0,0,0,.15);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between}
+header h1{font-size:20px;font-weight:600}header p{font-size:12px;opacity:.85}.author{font-size:12px;opacity:.9;margin-top:4px;font-weight:600}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+.header-actions button{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-weight:500}
+.header-actions button:hover{background:rgba(255,255,255,.28)}
+main{max-width:1400px;margin:0 auto;padding:14px 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:16px;box-shadow:0 2px 12px rgba(22,70,70,.04)}
+h2{margin:0 0 12px;color:#0b5e57;font-size:18px;font-weight:600;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h2 .badge{font-size:11px;font-weight:500;background:#fef3c7;color:#92400e;padding:2px 12px;border-radius:20px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px 16px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.field input,.field select{width:100%;padding:10px 12px;border:1px solid #cddbdb;border-radius:10px;background:#fff;font-size:14px}
+.field input:focus,.field select:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 3px rgba(15,118,110,.12)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.actions button{border:0;border-radius:10px;padding:10px 22px;font-weight:600;font-size:14px;cursor:pointer;transition:transform .1s,box-shadow .2s}
+.actions button:active{transform:scale(.97)}
+.primary{background:var(--p);color:#fff;box-shadow:0 2px 8px rgba(15,118,110,.25)}
+.primary:hover{box-shadow:0 4px 16px rgba(15,118,110,.35)}
+.secondary{background:var(--soft);color:#0b5e57}.secondary:hover{background:#d4edeb}
+.notice{padding:12px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;color:#92400e;font-size:13px;margin-top:14px;display:flex;align-items:center;gap:8px}
+.notice strong{color:#78350f}.hidden{display:none!important}
+.flex-between{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+#partoWrap{position:relative;width:100%;max-width:1912px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:2px solid var(--line);line-height:0}
+#partoWrap img{display:block;width:100%;height:auto}
+#partoWrap svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:6px}
+.tbl{border-collapse:collapse;width:100%;min-width:1300px;font-size:11px}
+.tbl th{background:#eaf4f3;color:#0b5e57;font-weight:600;padding:5px 3px;border-bottom:2px solid var(--line);text-align:center;white-space:nowrap;font-size:9px;text-transform:uppercase;letter-spacing:.2px}
+.tbl td{padding:2px 2px;border-bottom:1px solid #edf3f3;text-align:center;vertical-align:middle}
+.tbl input,.tbl select{padding:3px;width:48px;font-size:9px;border:1px solid #dbe6e6;border-radius:5px;background:#fff;text-align:center}
+.tbl input.time-input{width:110px;font-size:9px}
+.tbl select{width:50px;padding:2px;font-size:9px}
+.tbl .btn-rm{background:#fee2e2;border:0;border-radius:5px;color:#991b1b;font-weight:700;font-size:12px;width:22px;height:22px;cursor:pointer}
+.tbl .btn-rm:hover{background:#fecaca}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chartbox{border:1px solid var(--line);border-radius:12px;padding:10px 12px 6px;background:#fcfefe}
+.chartbox h3{font-size:13px;font-weight:600;color:#0b5e57;margin:0 0 6px}
+.chartbox svg{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:16px 28px;font-size:12px;color:var(--muted);padding:4px 0 10px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.legend-item{display:flex;align-items:center;gap:6px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.summary{font-size:14px;line-height:1.8;background:#f6fbfa;padding:14px 18px;border-radius:10px;border-left:4px solid var(--p)}
+.summary .warn{color:#92400e;background:#fffbeb;padding:4px 12px;border-radius:6px;display:inline-block;margin-top:4px}
+@media(max-width:900px){.charts{grid-template-columns:1fr}.grid-4{grid-template-columns:repeat(2,1fr)}.tbl{min-width:1100px}}
+@media(max-width:550px){.grid-4{grid-template-columns:1fr}header h1{font-size:16px}}
+@media print{header,.no-print{display:none!important}body,main{background:#fff;padding:0}.card{border:1px solid #ddd;box-shadow:none;break-inside:avoid}#partoWrap{border:0}}
+</style>
+<base target="_blank">
+</head>
+<body>
+<header>
+<div><h1>WHO Partograph - Not complicated</h1><div class="author">By Dr.Hamdy</div></div>
+<div class="header-actions">
+<button onclick="resetAll()">Reset</button>
+<button onclick="window.location.href='1.html'">Back</button>
+</div>
+</header>
+<main>
+<section class="card" id="inputCard">
+<h2>1. Patient data &amp; admission</h2>
+<div class="grid-4">
+<div class="field"><label>Name</label><input id="name" value=""></div>
+<div class="field"><label>Age</label><input id="age" value=""></div>
+<div class="field"><label>Gravida</label><input id="gravida" value=""></div>
+<div class="field"><label>Para</label><input id="para" value=""></div>
+<div class="field"><label>Hospital #</label><input id="hospitalNo" value=""></div>
+<div class="field"><label>Admission date</label><input id="admissionDate" type="date"></div>
+<div class="field"><label>Admission time</label><input id="admissionTime" type="time"></div>
+<div class="field"><label>ROM time</label><input id="romTime" type="time"></div>
+<div class="field"><label>Cervix at admission (cm)</label><select id="admitCervix"><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></div>
+<div class="field"><label>Descent in fifths (stage)</label><select id="admitDescent"><option value="5" selected>5 (-2)</option><option value="4">4 (-1)</option><option value="3">3 (stage 0)</option><option value="2">2 (+1)</option><option value="1">1 (+2)</option></select></div>
+<div class="field"><label>IV fluid</label><input id="fluid" value="Normal saline"></div>
+<div class="field"><label>Fluid rate</label><input id="fluidRate" value="1000 mL"></div>
+<div class="field"><label>Oxytocin</label><select id="oxy"><option value="none">None</option><option value="started" selected>Started</option></select></div>
+<div class="field"><label>Oxytocin conc. (U/L)</label><input id="oxyConc" value="10"></div>
+<div class="field"><label>Oxytocin drops/min</label><input id="oxyDrops" value="20"></div>
+<div class="field"><label>Delivery time</label><input id="deliveryTime" type="time"></div>
+</div>
+<div class="actions no-print">
+<button class="primary" onclick="generate()">Generate &amp; plot</button>
+</div>
+<div class="notice"><strong>Synthetic template data</strong> - all generated values are placeholders. <strong>Verify and replace</strong> with actual clinical records before use.</div>
+</section>
+
+<section class="card" id="imageCard">
+<h2>2. WHO Partograph form <span class="badge">auto-plotted</span></h2>
+<div class="flex-between" style="margin-bottom:12px;">
+<span style="font-size:12px;color:var(--muted);">Patient info writes directly into the form's blank boxes. Adjust X/Y below if text shifts.</span>
+</div>
+<div id="partoWrap">
+<img id="bgImage" src="who-partograph-grid.png" alt="WHO Modified Partograph">
+<svg id="overlaySvg" viewBox="0 0 1912 3021" preserveAspectRatio="xMidYMid meet"></svg>
+</div>
+<div class="actions no-print" style="margin-top:12px;">
+  <button class="secondary" onclick="downloadGridPdf()">Download PDF</button>
+  <button class="secondary" onclick="downloadGridImage()">Download image</button>
+</div>
+
+</section>
+
+<section id="result" class="hidden">
+<section class="card">
+<div class="flex-between">
+<h2>3. Observations <span class="badge">editable</span></h2>
+<span style="font-size:11px;color:var(--muted);">Change any value &rarr; graphs &amp; overlay update</span>
+</div>
+<div class="tablewrap">
+<table class="tbl" id="obsTable">
+<thead><tr>
+<th style="min-width:100px;">Time</th><th>Cervix<br>cm</th><th>Descent<br>/5</th><th>FHR<br>bpm</th>
+<th>Liquor</th><th>Molding</th><th>Contr.</th><th>Duration</th>
+<th>Pulse</th><th>BP</th><th>Temp</th><th style="width:26px;"></th>
+</tr></thead>
+<tbody></tbody>
+</table>
+</div>
+<div class="actions no-print" style="margin-top:10px;">
+<button class="secondary" onclick="addObservation()">+ Add row</button>
+<button class="secondary" onclick="regenerate()">Regenerate</button>
+<button class="secondary" onclick="clearObservations()">Clear</button>
+</div>
+</section>
+
+<section class="card">
+<h2>4. Classic WHO partograph graphs</h2>
+<div class="legend">
+<span class="legend-item"><span class="dot" style="background:#0f766e;"></span>Cervix (X)</span>
+<span class="legend-item"><span class="dot" style="background:#b45309;"></span>Descent (O)</span>
+<span class="legend-item"><span class="dot" style="background:#7c3aed;"></span>FHR</span>
+<span class="legend-item"><span class="dot" style="background:#dc2626;"></span>Contractions</span>
+<span class="legend-item"><span class="dot" style="background:#b45309;"></span>Pulse</span>
+<span class="legend-item"><span style="display:inline-block;width:20px;height:3px;background:#666;border-top:2px dashed #666;"></span> Alert line</span>
+<span class="legend-item"><span style="display:inline-block;width:20px;height:3px;background:#999;border-top:2px dotted #999;"></span> Action line</span>
+</div>
+<div class="charts">
+<div class="chartbox"><h3>Cervical dilatation &amp; descent</h3><svg id="cervixGraph" viewBox="0 0 1150 480"></svg></div>
+<div class="chartbox"><h3>Fetal heart rate (bpm)</h3><svg id="fhrGraph" viewBox="0 0 1150 380"></svg></div>
+<div class="chartbox"><h3>Contractions / 10 min</h3><svg id="conGraph" viewBox="0 0 1150 380"></svg></div>
+<div class="chartbox"><h3>Maternal pulse, BP &amp; temperature</h3><svg id="maternalGraph" viewBox="0 0 1150 420"></svg></div>
+</div>
+</section>
+
+<section class="card no-print">
+<h2>5. Summary</h2>
+<div id="summary" class="summary"></div>
+<div class="actions" style="margin-top:12px;">
+<button class="primary" onclick="savePartogramWithReport()">Save partogram with report</button>
+</div>
+</section>
+</section>
+</main>
+<script>
+
+/* ========== GRID CONFIG ========== */
+const DEFAULT_GRID = {
+  imgW:1912, imgH:3021,
+  time:{left:508, right:1662, hours:12},
+  cervix:{topY:805, botY:1460, min:0, max:10},
+  fhr:{topY:205, botY:700, min:80, max:200},
+  liquorY:730, moldingY:760,
+  con:{topY:1625, botY:1950, min:0, max:5},
+  vitals:{topY:2330, botY:2710, min:60, max:180},
+  tempY:2780
+};
+let GRID = JSON.parse(JSON.stringify(DEFAULT_GRID));
+
+function readCalib(){
+  GRID.cervix.topY = getSafeNumber('cTop', DEFAULT_GRID.cervix.topY);
+  GRID.cervix.botY = getSafeNumber('cBot', DEFAULT_GRID.cervix.botY);
+  GRID.fhr.topY = getSafeNumber('fTop', DEFAULT_GRID.fhr.topY);
+  GRID.fhr.botY = getSafeNumber('fBot', DEFAULT_GRID.fhr.botY);
+  GRID.liquorY = getSafeNumber('liquorY', DEFAULT_GRID.liquorY);
+  GRID.moldingY = getSafeNumber('moldingY', DEFAULT_GRID.moldingY);
+  GRID.con.topY = getSafeNumber('conTop', DEFAULT_GRID.con.topY);
+  GRID.con.botY = getSafeNumber('conBot', DEFAULT_GRID.con.botY);
+  GRID.vitals.topY = getSafeNumber('pTop', DEFAULT_GRID.vitals.topY);
+  GRID.vitals.botY = getSafeNumber('pBot', DEFAULT_GRID.vitals.botY);
+  GRID.time.left = getSafeNumber('xLeft', DEFAULT_GRID.time.left);
+  GRID.time.right = getSafeNumber('xRight', DEFAULT_GRID.time.right);
+  GRID.tempY = getSafeNumber('tY', DEFAULT_GRID.tempY);
+}
+function applyCalib(){ readCalib(); plotOverlay(); drawAllClassic(); }
+function resetCalib(){
+  const defaults = [
+    ['pi_name_x',150],['pi_name_y',50],['pi_age_x',500],['pi_age_y',50],['pi_gravida_x',875],['pi_gravida_y',45],['pi_para_x',1125],['pi_para_y',45],
+    ['pi_hospital_x',1600],['pi_hospital_y',45],['pi_adm_date_x',300],['pi_adm_date_y',130],['pi_adm_time_x',925],['pi_adm_time_y',130],['pi_rom_time_x',1400],['pi_rom_time_y',130],
+    ['cTop',805],['cBot',1460],['fTop',205],['fBot',700],['liquorY',730],['moldingY',760],['conTop',1625],['conBot',1950],['pTop',2330],['pBot',2710],['xLeft',508],['xRight',1662],['tY',2780]
+  ];
+  defaults.forEach(([id, value]) => { const el = $(id); if (el) el.value = value; });
+  applyCalib();
+}
+
+/* ========== HELPERS ========== */
+const $ = id => document.getElementById(id);
+function getSafeNumber(id, fallback){ const el = $(id); return el && el.value !== '' ? Number(el.value) : fallback; }
+function pad(n){ return String(n).padStart(2,'0'); }
+function dtLocal(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes()); }
+function parseDateTime(str){
+  if(!str) return null; if(str instanceof Date) return str;
+  const parts = String(str).split('T');
+  if(parts.length !== 2) return new Date(str);
+  const d = parts[0].split('-').map(Number), t = parts[1].split(':').map(Number);
+  return new Date(d[0], d[1]-1, d[2], t[0], t[1]||0);
+}
+function num(v){ return (v===''||v==null)?null:Number(v); }
+function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+function debounce(fn,delay){ let t; const f=function(...args){clearTimeout(t);t=setTimeout(()=>fn.apply(this,args),delay);}; f.cancel=function(){clearTimeout(t);}; return f; }
+function valToY(val, sectionKey){ const s=GRID[sectionKey]; return s.botY - ((val - s.min) / (s.max - s.min)) * (s.botY - s.topY); }
+function hoursToX(h){ return GRID.time.left + (h / GRID.time.hours) * (GRID.time.right - GRID.time.left); }
+
+/* ========== DEBUG GRID ========== */
+let debugOn = false;
+function toggleDebug(){ debugOn = !debugOn; plotOverlay(); }
+function drawDebugGrid(svg){
+  if(!debugOn) return;
+  const g = document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('opacity','0.4');
+  for(let i=0;i<=24;i++){ const x=hoursToX(i/2); const l=document.createElementNS('http://www.w3.org/2000/svg','line'); l.setAttribute('x1',x);l.setAttribute('y1',0);l.setAttribute('x2',x);l.setAttribute('y2',GRID.imgH);l.setAttribute('stroke',i%2===0?'#ff0000':'#ff8888');l.setAttribute('stroke-width',i%2===0?2:1); if(i%2===0)l.setAttribute('stroke-dasharray','4 4'); g.appendChild(l); }
+  svg.appendChild(g);
+}
+
+/* ========== PATIENT INFO PLOTTING (Per-Field) ========== */
+function plotPatientInfo(svg){
+  const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+  const fontSize = 24;
+  const fontWeight = '700';
+  const fill = '#0f766e';
+
+  let dateVal = $('admissionDate').value;
+  if(dateVal){ const p=dateVal.split('-'); if(p.length===3) dateVal=p[2]+'/'+p[1]+'/'+p[0]; }
+
+  const fields = [
+    { id:'name', val: $('name').value, x:150, y:50 },
+    { id:'age', val: $('age').value, x:500, y:50 },
+    { id:'gravida', val: $('gravida').value, x:875, y:45 },
+    { id:'para', val: $('para').value, x:1125, y:45 },
+    { id:'hospital', val: $('hospitalNo').value, x:1600, y:45 },
+    { id:'adm_date', val: dateVal, x:300, y:130 },
+    { id:'adm_time', val: $('admissionTime').value, x:925, y:130 },
+    { id:'rom_time', val: $('romTime').value, x:1400, y:130 }
+  ];
+
+  fields.forEach(f => {
+    if(!f.val) return;
+    const x = getSafeNumber('pi_' + f.id + '_x', f.x);
+    const y = getSafeNumber('pi_' + f.id + '_y', f.y);
+
+    const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    txt.setAttribute('x', x); txt.setAttribute('y', y);
+    txt.setAttribute('fill', fill); txt.setAttribute('font-size', String(fontSize));
+    txt.setAttribute('font-weight', fontWeight); txt.setAttribute('font-family', 'system-ui, Arial, sans-serif');
+    txt.textContent = f.val;
+    g.appendChild(txt);
+  });
+
+  svg.insertBefore(g, svg.firstChild);
+}
+
+/* ========== OVERLAY PLOTTING ========== */
+function clearOverlay(){ const svg = $('overlaySvg'); while(svg.firstChild) svg.removeChild(svg.firstChild); }
+
+function plotOverlay(){
+  clearOverlay();
+  readCalib();
+
+  const svg = $('overlaySvg');
+  
+  plotPatientInfo(svg);
+
+  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML = '<pattern id="con_dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.5" fill="#dc2626" stroke="none"/></pattern><pattern id="con_lines" width="8" height="8" patternUnits="userSpaceOnUse"><line x1="0" y1="8" x2="8" y2="0" stroke="#dc2626" stroke-width="1.5"/></pattern>';
+  svg.appendChild(defs);
+
+  const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+  const data = getData();
+  
+  if(!data.length) { svg.appendChild(g); drawDebugGrid(svg); return; }
+
+  const dateStr = $('admissionDate').value, timeStr = $('admissionTime').value;
+  const deliveryStr = $('deliveryTime').value, romStr = $('romTime').value;
+  // Compute admitTime so the first cervical point sits on the printed alert line that starts at 4 cm.
+  let admitTime = (dateStr && timeStr) ? parseDateTime(dateStr + 'T' + timeStr) : new Date();
+  const firstObs = data.find(d => d && d.time && d.cervix != null && !isNaN(d.cervix));
+  if (firstObs) {
+    const t0 = parseDateTime(firstObs.time);
+    const c0 = Number(firstObs.cervix);
+    if (t0 && !isNaN(c0)) admitTime = new Date(t0.getTime() - (c0 - 4) * 3600000);
+  }
+  let deliveryTime = deliveryStr ? parseDateTime(dateStr + 'T' + deliveryStr) : null;
+  if (deliveryTime && admitTime && deliveryTime <= admitTime) deliveryTime = new Date(deliveryTime.getTime() + 86400000);
+  let romTime = romStr ? parseDateTime(dateStr + 'T' + romStr) : null;
+  if (romTime && admitTime && romTime < admitTime) romTime = new Date(romTime.getTime() + 86400000);
+
+  try {
+    const admitDateStr = admitTime || new Date(); const maxHalf = Math.ceil(GRID.time.hours * 2);
+    for(let half=0; half<=maxHalf; half++){
+      const h=half/2, xTick=hoursToX(h);
+      const t1=document.createElementNS('http://www.w3.org/2000/svg','line'); t1.setAttribute('x1',xTick);t1.setAttribute('x2',xTick);t1.setAttribute('y1',GRID.cervix.botY+6);t1.setAttribute('y2',GRID.cervix.botY+14);t1.setAttribute('stroke','#e4efef');t1.setAttribute('stroke-width','1'); g.appendChild(t1);
+      if(half%2===0){ const labelTime=new Date(admitDateStr.getTime()+h*3600000); const txt=document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',xTick);txt.setAttribute('y',GRID.cervix.botY+34);txt.setAttribute('fill','#4f6f73');txt.setAttribute('font-size','16');txt.setAttribute('font-weight','700');txt.setAttribute('text-anchor','middle');txt.textContent=pad(labelTime.getHours())+':'+pad(labelTime.getMinutes()); g.appendChild(txt); }
+    }
+  }catch(e){}
+
+  const validData = data.filter(d=>{ if(!d.time) return false; const ct=parseDateTime(d.time); if(!ct) return false; if(deliveryTime && ct>deliveryTime) return false; return true; });
+  const cervixPts=[], descentPts=[], fhrPts=[], pulsePts=[];
+  const deliveryX = (deliveryTime && admitTime) ? hoursToX((deliveryTime - admitTime) / 3600000) : null;
+
+  validData.forEach((d, idx)=>{
+    const currentTime = parseDateTime(d.time); const h = (currentTime - admitTime) / 3600000;
+    if(h < 0 || h > GRID.time.hours) return; const x = hoursToX(h);
+
+    if(d.cervix != null && !isNaN(d.cervix)){ const y=valToY(clamp(d.cervix,0,10),'cervix'); cervixPts.push({x,y}); const sz=12; ['x1,y1,x2,y2','x1,y1,x2,y2'].forEach((_,i)=>{ const l=document.createElementNS('http://www.w3.org/2000/svg','line'); if(i===0){l.setAttribute('x1',x-sz);l.setAttribute('y1',y-sz);l.setAttribute('x2',x+sz);l.setAttribute('y2',y+sz);}else{l.setAttribute('x1',x-sz);l.setAttribute('y1',y+sz);l.setAttribute('x2',x+sz);l.setAttribute('y2',y-sz);} l.setAttribute('stroke','#0f766e');l.setAttribute('stroke-width','5'); g.appendChild(l); }); }
+    
+    if(d.descent != null && !isNaN(d.descent)){ const y=valToY(clamp(d.descent,0,5),'cervix'); descentPts.push({x,y}); const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','10');c.setAttribute('fill','none');c.setAttribute('stroke','#b45309');c.setAttribute('stroke-width','5'); g.appendChild(c); }
+    
+    if(d.fhr != null && !isNaN(d.fhr)){ const y=valToY(clamp(d.fhr,80,200),'fhr'); fhrPts.push({x,y}); const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','8');c.setAttribute('fill','#7c3aed'); g.appendChild(c); }
+
+    if(d.con != null && !isNaN(d.con) && d.con > 0){
+      const s=GRID.con, unitH=(s.botY-s.topY)/5, blockW=(GRID.time.right-GRID.time.left)/24, blockH=unitH*0.85;
+      const blockIdx=Math.floor(h*2), barX=GRID.time.left+blockIdx*blockW; let barW=blockW;
+      if(deliveryTime){ const dX=hoursToX((deliveryTime-admitTime)/3600000); if(barX+barW>dX) barW=Math.max(0,dX-barX); }
+      if(barW>0){ let fill='#dc2626'; const dur=d.duration||'mild'; if(dur==='mild')fill='url(#con_dots)'; else if(dur==='moderate')fill='url(#con_lines)'; for(let j=0;j<clamp(d.con,0,5);j++){ const y=s.botY-j*unitH-unitH/2-blockH/2; const r=document.createElementNS('http://www.w3.org/2000/svg','rect'); r.setAttribute('x',barX);r.setAttribute('y',y);r.setAttribute('width',barW);r.setAttribute('height',blockH);r.setAttribute('fill',fill);r.setAttribute('stroke','#991b1b');r.setAttribute('stroke-width','0.5'); g.appendChild(r); } }
+    }
+
+    if(d.pulse != null && !isNaN(d.pulse)){ const y=valToY(clamp(d.pulse,60,180),'vitals'); pulsePts.push({x,y}); const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','8');c.setAttribute('fill','#b45309'); g.appendChild(c); }
+
+    if(d.bp){ const parts=String(d.bp).split('/'); const sys=num(parts[0]),dia=num(parts[1]); if(sys!=null&&!isNaN(sys)){ const ySys=valToY(clamp(sys,60,180),'vitals'),diaVal=(dia!=null&&!isNaN(dia))?dia:(sys-40),yDia=valToY(clamp(diaVal,60,180),'vitals'); const l=document.createElementNS('http://www.w3.org/2000/svg','line'); l.setAttribute('x1',x);l.setAttribute('y1',ySys);l.setAttribute('x2',x);l.setAttribute('y2',yDia);l.setAttribute('stroke','#2563eb');l.setAttribute('stroke-width','4'); g.appendChild(l); [ySys,yDia].forEach(yy=>{ const c=document.createElementNS('http://www.w3.org/2000/svg','line'); c.setAttribute('x1',x-8);c.setAttribute('y1',yy);c.setAttribute('x2',x+8);c.setAttribute('y2',yy);c.setAttribute('stroke','#2563eb');c.setAttribute('stroke-width','4'); g.appendChild(c); }); } }
+
+    const halfBlockW=(GRID.time.right-GRID.time.left)/24, halfBlockIdx=Math.floor(h*2), halfBlockCenterX=GRID.time.left+(halfBlockIdx+0.5)*halfBlockW;
+    const hourWidth=(GRID.time.right-GRID.time.left)/GRID.time.hours, hourIdx=Math.floor(h), hourCenterX=GRID.time.left+(hourIdx+0.5)*hourWidth;
+    
+    if(d.temp!=null&&!isNaN(d.temp)&&currentTime.getMinutes()===0){ if(!(deliveryX&&hourCenterX>deliveryX)){ const txt=document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',hourCenterX);txt.setAttribute('y',GRID.tempY);txt.setAttribute('fill','#0f766e');txt.setAttribute('font-size','26');txt.setAttribute('text-anchor','middle');txt.setAttribute('font-weight','700');txt.textContent=Number(d.temp).toFixed(1)+'\u00B0'; g.appendChild(txt); } }
+    if(!(deliveryTime&&currentTime>deliveryTime)&&(d.liquor||(romTime&&currentTime<romTime))){ const liquorVal=d.liquor||(romTime&&currentTime<romTime?'I':''); if(liquorVal&&!(deliveryX&&halfBlockCenterX>deliveryX)){ const txt=document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',halfBlockCenterX);txt.setAttribute('y',GRID.liquorY);txt.setAttribute('fill','#0f766e');txt.setAttribute('font-size','22');txt.setAttribute('text-anchor','middle');txt.setAttribute('font-weight','700');txt.textContent=liquorVal; g.appendChild(txt); } }
+    if(!(deliveryTime&&currentTime>deliveryTime)&&d.molding&&(!romTime||currentTime>=romTime)){ if(!(deliveryX&&halfBlockCenterX>deliveryX)){ const txt=document.createElementNS('http://www.w3.org/2000/svg','text'); txt.setAttribute('x',halfBlockCenterX);txt.setAttribute('y',GRID.moldingY);txt.setAttribute('fill','#b45309');txt.setAttribute('font-size','22');txt.setAttribute('text-anchor','middle');txt.setAttribute('font-weight','700');txt.textContent=d.molding; g.appendChild(txt); } }
+  });
+
+  [{pts:cervixPts,color:'#0f766e',width:4},{pts:descentPts,color:'#b45309',width:3,dash:'8 6'},{pts:fhrPts,color:'#7c3aed',width:3},{pts:pulsePts,color:'#b45309',width:3}].forEach(spec=>{
+    if(spec.pts.length>1){ const p=document.createElementNS('http://www.w3.org/2000/svg','polyline'); p.setAttribute('points',spec.pts.map(pt=>pt.x+','+pt.y).join(' '));p.setAttribute('fill','none');p.setAttribute('stroke',spec.color);p.setAttribute('stroke-width',spec.width);p.setAttribute('opacity','0.85');if(spec.dash)p.setAttribute('stroke-dasharray',spec.dash); g.insertBefore(p,g.firstChild); }
+  });
+
+  svg.appendChild(g);
+  drawDebugGrid(svg);
+}
+
+/* ========== DATA GENERATION & TABLE ========== */
+function defaultTimes(){
+  const dateStr=$('admissionDate').value,timeStr=$('admissionTime').value; if(!dateStr||!timeStr) return [];
+  const a=parseDateTime(dateStr+'T'+timeStr),deliveryStr=$('deliveryTime').value; if(!deliveryStr) return [];
+  let b=parseDateTime(dateStr+'T'+deliveryStr); if(b<=a) b=new Date(b.getTime()+86400000); if(isNaN(a)||isNaN(b)||b<=a) return [];
+  const mins=(b-a)/60000,step=30,maxRows=80; let count=Math.floor(mins/step)+1; if(count>maxRows) count=maxRows;
+  const arr=[]; for(let i=0;i<count;i++){const nt=new Date(a.getTime()+i*step*60000);if(nt<=b)arr.push(nt);} const last=arr[arr.length-1]; if(last&&last.getTime()!==b.getTime()&&arr.length<maxRows)arr.push(b); return arr;
+}
+
+function generateObservations(times){
+  const startCervix = Number($('admitCervix').value) || 4;
+  const startDescent = Number($('admitDescent').value) || 5;
+  const total = times.length - 1;
+  if (total <= 0) return [];
+
+  const durOpts = ['mild','moderate','strong'];
+  const dateStr = $('admissionDate').value;
+  const romStr = $('romTime').value;
+  const romTime = romStr ? parseDateTime(dateStr + 'T' + romStr) : null;
+
+  // Individualized random offsets for this specific labor case
+  const fhrOffset = Math.random() * Math.PI * 2;
+  const pulseOffset = Math.random() * Math.PI * 2;
+  const bpSysOffset = Math.random() * Math.PI * 2;
+  const bpDiaOffset = Math.random() * Math.PI * 2;
+
+  // State variables to enforce strict monotonicity and prevent illogical backwards steps
+  let prevCervix = startCervix;
+  let prevDescent = startDescent;
+  let prevCon = 1;
+  let prevMoldIdx = 0;
+  const moldOptions = ['0', '+', '++', '+++'];
+
+  return times.map((d, i) => {
+    const p = total ? i / total : 1; // Progress 0.0 to 1.0
+
+    // --- CERVIX (Strictly Increasing, S-Curve) ---
+    // Math.pow(p, 0.85) creates a slightly accelerating physiological curve
+    let cervCalc = startCervix + (10 - startCervix) * Math.pow(p, 0.85);
+    // Enforce strictly increasing (minimum 0.1 cm step up per interval)
+    let cerv = (i === 0) ? startCervix : Math.max(cervCalc, prevCervix + 0.1);
+    if (i === total) cerv = 10; // Must be 10cm at delivery
+    cerv = Math.round(clamp(cerv, startCervix, 10));
+    prevCervix = cerv;
+
+    // --- DESCENT (Strictly Decreasing, Late Drop Curve) ---
+    // Keeps descent above zero until the final stage so it does not sit flat at 0 for a long period.
+    let descCalc = startDescent * Math.pow(1 - p, 3.5);
+    let descentFloor = 0;
+    if (i > 0 && i < total) {
+      const remaining = total - i;
+      if (remaining <= Math.max(2, total * 0.12)) descentFloor = 1;
+      else if (remaining <= Math.max(3, total * 0.25)) descentFloor = 2;
+      else if (remaining <= Math.max(5, total * 0.45)) descentFloor = 3;
+      else descentFloor = 4;
+    }
+    // Enforce strictly decreasing (minimum 0.05 step down per interval), but avoid long flat zeros before delivery.
+    let desc = (i === 0) ? startDescent : Math.min(descCalc, prevDescent - 0.05);
+    if (i > 0 && i < total) desc = Math.max(desc, descentFloor);
+    if (i === total) desc = 0; // Must be 0/5 at delivery
+    desc = Math.round(clamp(desc, 0, startDescent));
+    prevDescent = desc;
+
+    // --- FHR (Normal Variability 112-158) ---
+    // Uses unique offset per case to ensure different baselines/rhythms
+    let fhr = 136 + 6 * Math.sin(i * 0.5 + fhrOffset) + 3 * Math.sin(i * 1.3);
+    fhr = Math.round(clamp(fhr, 112, 158));
+
+    // --- CONTRACTIONS (Strictly Increasing in number) ---
+    let conCalc = 1 + p * 4 + (Math.random() * 0.3);
+    let con = (i === 0) ? 1 : Math.max(conCalc, prevCon + 0.1);
+    con = Math.round(clamp(con, 1, 5));
+    prevCon = con;
+
+    // Duration tied to progress
+    let durIdx = 0; // mild
+    if (p > 0.2) durIdx = 1; // moderate
+    if (p > 0.6) durIdx = 2; // strong
+
+    // --- PULSE (Slight physiological increase towards pushing) ---
+    let pulse = 78 + (8 * p) + 4 * Math.sin(i * 0.4 + pulseOffset);
+    pulse = Math.round(clamp(pulse, 68, 100));
+
+    // --- BP (Slight physiological increase towards pushing) ---
+    let sys = 112 + (12 * p) + 4 * Math.sin(i * 0.5 + bpSysOffset);
+    let dia = 72 + (5 * p) + 3 * Math.sin(i * 0.6 + bpDiaOffset);
+    sys = Math.round(clamp(sys, 100, 145));
+    dia = Math.round(clamp(dia, 60, 95));
+
+    // --- TEMP (Stable, slight harmless variation) ---
+    let temp = 36.8 + 0.2 * Math.sin(i * 0.7) + 0.1 * Math.random();
+    temp = clamp(temp, 36.5, 37.5);
+    temp = Math.round(temp * 10) / 10;
+
+    // --- LIQUOR & MOLDING ---
+    let liquor = '', molding = '';
+    const descentProgress = (startDescent - desc) / startDescent;
+
+    if(romTime && d < romTime){
+      liquor = 'I'; // Intact membranes
+      molding = '0';
+    } else {
+      if(romTime && Math.abs(d - romTime) < 31 * 60000){
+        liquor = Math.random() < 0.85 ? 'C' : 'M';
+      } else {
+        const r = Math.random();
+        if(r < 0.55) liquor = 'C';
+        else if(r < 0.80) liquor = 'M';
+        else if(r < 0.92) liquor = 'B';
+        else liquor = 'A';
+      }
+
+      // Molding tied strictly to descent progress
+      let moldIdxCalc = 0;
+      if (descentProgress > 0.2) moldIdxCalc = 1;
+      if (descentProgress > 0.5) moldIdxCalc = 2;
+      if (descentProgress > 0.8) moldIdxCalc = 3;
+      
+      // Enforce strictly non-decreasing (can't go from ++ back to +)
+      moldIdxCalc = Math.max(moldIdxCalc, prevMoldIdx);
+      molding = moldOptions[moldIdxCalc];
+      prevMoldIdx = moldIdxCalc;
+    }
+
+    return {
+      time: dtLocal(d), cervix: cerv, descent: desc,
+      fhr: fhr, liquor: liquor, molding: molding, con: con,
+      duration: durOpts[durIdx], pulse: pulse, bp: sys + '/' + dia,
+      temp: temp
+    };
+  });
+}
+
+function addObservation(d){
+  const tr=document.createElement('tr'),tbody=$('obsTable').querySelector('tbody');
+  const inp=(cls,type,val)=>{const td=document.createElement('td'),i=document.createElement('input');i.className=cls;i.type=type;i.value=(val!=null)?val:'';if(type==='number'){i.step='0.1';i.min='0';}td.appendChild(i);return td;};
+  const sel=(vals,selected,cls)=>{const td=document.createElement('td'),s=document.createElement('select');if(cls)s.className=cls;vals.forEach(v=>{const o=document.createElement('option');o.textContent=v;o.value=v;if(v===selected)o.selected=true;s.appendChild(o);});td.appendChild(s);return td;};
+  tr.appendChild(inp('time-input','datetime-local',d.time||'')); tr.appendChild(inp('cervix','number',d.cervix??'')); tr.appendChild(inp('descent','number',d.descent??'')); tr.appendChild(inp('fhr','number',d.fhr??''));
+  tr.appendChild(sel(['','I','C','M','B','A'],d.liquor||'','liquor-sel')); tr.appendChild(sel(['','0','+','++','+++'],d.molding||'','mold-sel'));
+  tr.appendChild(inp('con','number',d.con??'')); tr.appendChild(sel(['mild','moderate','strong'],d.duration||'mild','dur-sel'));
+  tr.appendChild(inp('pulse','number',d.pulse??'')); tr.appendChild(inp('bp','text',d.bp??'')); tr.appendChild(inp('temp','number',d.temp??'37.0'));
+  const rmTd=document.createElement('td'),rmBtn=document.createElement('button'); rmBtn.textContent='\u2715';rmBtn.className='btn-rm';rmBtn.type='button';rmBtn.onclick=()=>{tr.remove();debouncedUpdate();};rmTd.appendChild(rmBtn);tr.appendChild(rmTd);
+  tbody.appendChild(tr); tr.querySelectorAll('input,select').forEach(el=>{el.addEventListener('input',debouncedUpdate);el.addEventListener('change',debouncedUpdate);}); return tr;
+}
+function getData(){ return Array.from($('obsTable').querySelectorAll('tbody tr')).map(tr=>{const q=s=>tr.querySelector('.'+s)?.value||'';return{time:q('time-input'),cervix:num(q('cervix')),descent:num(q('descent')),fhr:num(q('fhr')),liquor:tr.querySelector('.liquor-sel')?.value||'',molding:tr.querySelector('.mold-sel')?.value||'',con:num(q('con')),duration:tr.querySelector('.dur-sel')?.value||'mild',pulse:num(q('pulse')),bp:q('bp'),temp:num(q('temp'))};}); }
+function generate(){ const dateStr=$('admissionDate').value,timeStr=$('admissionTime').value;if(!dateStr||!timeStr){alert('Please enter admission date and time.');return;}const deliveryStr=$('deliveryTime').value;if(!deliveryStr){alert('Please enter delivery time.');return;}const a=parseDateTime(dateStr+'T'+timeStr);let b=parseDateTime(dateStr+'T'+deliveryStr);if(b<=a)b=new Date(b.getTime()+86400000);if(b<=a){alert('Delivery time must be after admission time.');return;}if(Number($('admitCervix').value)<4){alert('Cervical dilatation must be >=4 cm.');return;}regenerate(); }
+function regenerate(){ const times=defaultTimes();const tbody=$('obsTable').querySelector('tbody');tbody.innerHTML='';if(!times.length)return;generateObservations(times).forEach(o=>addObservation(o));$('result').classList.remove('hidden');debouncedUpdate(); }
+function clearObservations(){ $('obsTable').querySelector('tbody').innerHTML='';debouncedUpdate(); }
+
+/* ========== CLASSIC SVG GRAPHS ========== */
+function clearSVG(id){const s=$(id);while(s.firstChild)s.removeChild(s.firstChild);return s;}
+function E(tag,attrs,text){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!==undefined)e.textContent=text;return e;}
+function graphSetup(id,title,opts){
+  const s = clearSVG(id);
+  const W = 1150, R = 35, T = 38, B = 50, H = opts.h || 400;
+  // Compute left margin so chart's 0h aligns with the printed grid's alert line (GRID.time.left)
+  const gridLeftFraction = (GRID && GRID.time && GRID.imgW) ? (GRID.time.left / GRID.imgW) : (508 / 1912);
+  const L = Math.max(20, Math.round(gridLeftFraction * W));
+  const w = W - L - R, h = H - T - B;
+  s.appendChild(E('rect', { x: 0, y: 0, width: W, height: H, fill: '#fcfefe' }));
+  s.appendChild(E('text', { x: 20, y: 24, 'font-size': 16, 'font-weight': '600', fill: '#0b5e57' }, title));
+  for (let j = 0; j <= 10; j++) {
+    const y = T + h - j * h / 10;
+    s.appendChild(E('line', { x1: L, y1: y, x2: W - R, y2: y, stroke: '#e4efef', 'stroke-width': 0.8 }));
+    const v = opts.min + (opts.max - opts.min) * j / 10;
+    const label = opts.decimals !== undefined ? v.toFixed(opts.decimals) : String(Math.round(v));
+    s.appendChild(E('text', { x: L - 8, y: y + 4, 'text-anchor': 'end', 'font-size': 10, fill: '#4f6f73' }, label));
+  }
+
+  const data = getData();
+  const dateStr = $('admissionDate').value, timeStr = $('admissionTime').value, deliveryStr = $('deliveryTime').value;
+  // Keep printed alert line starting at 4 cm. If first observation exists, shift admitTime
+  // so that the first cervical point plots on the alert line (alert line: 4cm -> 10cm).
+  let admitTime = (dateStr && timeStr) ? parseDateTime(dateStr + 'T' + timeStr) : new Date();
+  if (data && data.length) {
+    const first = data.find(d => d && d.time && d.cervix != null && !isNaN(d.cervix));
+    if (first) {
+      const t0 = parseDateTime(first.time);
+      const c0 = Number(first.cervix);
+      if (t0 && !isNaN(c0)) {
+        const offsetHours = (c0 - 4); // hours from alert-line start at 4cm
+        admitTime = new Date(t0.getTime() - offsetHours * 3600000);
+      }
+    }
+  }
+  let deliveryTime = (dateStr && deliveryStr) ? parseDateTime(dateStr + 'T' + deliveryStr) : null;
+  if (deliveryTime && admitTime && deliveryTime <= admitTime) deliveryTime = new Date(deliveryTime.getTime() + 86400000);
+
+  for (let i = 0; i <= 24; i++) {
+    const x = L + (i / 24) * w;
+    if (i % 2 === 0) {
+      s.appendChild(E('line', { x1: x, y1: T, x2: x, y2: T + h, stroke: '#eef5f5', 'stroke-width': 1 }));
+      if (i % 4 === 0) s.appendChild(E('text', { x: x, y: T + h + 18, 'text-anchor': 'middle', 'font-size': 9, fill: '#4f6f73' }, `${i / 2}h`));
+    } else {
+      s.appendChild(E('line', { x1: x, y1: T, x2: x, y2: T + h, stroke: '#f5fafa', 'stroke-width': 1 }));
+    }
+  }
+  return { s, L, R, T, B, H, W, w, h, data, min: opts.min, max: opts.max, admitTime, deliveryTime };
+}
+function plotSeries(g,key,color,r,dashed){const pts=[];g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.deliveryTime&&ct>g.deliveryTime)return;const v=d[key];if(v==null||!isFinite(v))return;const hours=(ct-g.admitTime)/3600000;const x=g.L+Math.min(hours/12,1)*g.w;const y=g.T+g.h-(v-g.min)/(g.max-g.min)*g.h;pts.push([x,y]);});if(pts.length>1){const poly=E('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:color,'stroke-width':3,'stroke-linejoin':'round','stroke-linecap':'round'});if(dashed)poly.setAttribute('stroke-dasharray',dashed);g.s.appendChild(poly);}pts.forEach(p=>g.s.appendChild(E('circle',{cx:p[0],cy:p[1],r:r||4.5,fill:color,stroke:'#fff','stroke-width':1.2})));return pts;}
+
+function drawCervixGraph(){
+  const g=graphSetup('cervixGraph','Cervical dilatation & descent',{min:0,max:10,h:440});
+  const alertStartCervix = 4;
+  const alertEndCervix = 10;
+  const alertHours = 6; // standard WHO alert line: 4 cm to 10 cm over 6 hours in the classic graph
+  const toY = val => g.T + g.h - ((val - g.min) / (g.max - g.min)) * g.h;
+  const xAtHours = hours => g.L + Math.min(hours / 12, 1) * g.w;
+  const xAlertStart = xAtHours(0);
+  const yAlertStart = toY(alertStartCervix);
+  const xAlertEnd = xAtHours(alertHours);
+  const yAlertEnd = toY(alertEndCervix);
+  const xActionStart = xAtHours(4);
+  const yActionStart = toY(alertStartCervix);
+  const xActionEnd = xAtHours(alertHours + 4);
+  const yActionEnd = toY(alertEndCervix);
+  g.s.appendChild(E('line',{x1:xAlertStart,y1:yAlertStart,x2:xAlertEnd,y2:yAlertEnd,stroke:'#666','stroke-width':2,'stroke-dasharray':'6 4'}));
+  g.s.appendChild(E('line',{x1:xActionStart,y1:yActionStart,x2:xActionEnd,y2:yActionEnd,stroke:'#999','stroke-width':2,'stroke-dasharray':'4 4'}));
+  const cervixPts=[],descentPts=[];g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.deliveryTime&&ct>g.deliveryTime)return;const hours=(ct-g.admitTime)/3600000,x=g.L+Math.min(hours/12,1)*g.w;if(d.cervix!=null){const y=toY(d.cervix);cervixPts.push([x,y]);const sz=6;g.s.appendChild(E('line',{x1:x-sz,y1:y-sz,x2:x+sz,y2:y+sz,stroke:'#0f766e','stroke-width':2.5}));g.s.appendChild(E('line',{x1:x-sz,y1:y+sz,x2:x+sz,y2:y-sz,stroke:'#0f766e','stroke-width':2.5}));}if(d.descent!=null){const y=toY(d.descent);descentPts.push([x,y]);g.s.appendChild(E('circle',{cx:x,cy:y,r:6,fill:'none',stroke:'#b45309','stroke-width':2.5}));}});if(cervixPts.length>1)g.s.appendChild(E('polyline',{points:cervixPts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#0f766e','stroke-width':2}));if(descentPts.length>1)g.s.appendChild(E('polyline',{points:descentPts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#b45309','stroke-width':2,'stroke-dasharray':'4 4'}));g.s.appendChild(E('text',{x:80,y:68,'font-size':10,fill:'#0f766e'},'X = Cervix (cm)'));g.s.appendChild(E('text',{x:80,y:84,'font-size':10,fill:'#b45309'},'O = Descent (/5)'));}
+function drawFhrGraph(){const g=graphSetup('fhrGraph','Fetal heart rate (bpm)',{min:60,max:200,h:340});plotSeries(g,'fhr','#7c3aed',5);g.s.appendChild(E('line',{x1:g.L,y1:g.T+g.h-50/140*g.h,x2:g.L+g.w,y2:g.T+g.h-50/140*g.h,stroke:'#d6c6e6','stroke-width':1,'stroke-dasharray':'4 4'}));}
+function drawConGraph(){const g=graphSetup('conGraph','Contractions / 10 min',{min:0,max:5,h:340});const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');defs.innerHTML='<pattern id="g_dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.5" fill="#dc2626" stroke="none"/></pattern><pattern id="g_lines" width="8" height="8" patternUnits="userSpaceOnUse"><line x1="0" y1="8" x2="8" y2="0" stroke="#dc2626" stroke-width="1.5"/></pattern>';g.s.appendChild(defs);const unitH=g.h/5,blockW=g.w/24,blockH=unitH*0.85;g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.deliveryTime&&ct>g.deliveryTime)return;const con=d.con;if(con==null||con===0)return;const hours=(ct-g.admitTime)/3600000,blockIdx=Math.floor(Math.min(hours/12,1)*24),barX=g.L+blockIdx*blockW;let barW=blockW;if(g.deliveryTime){const dX=g.L+Math.min((g.deliveryTime-g.admitTime)/3600000/12,1)*g.w;if(barX+barW>dX)barW=Math.max(0,dX-barX);}if(barW<=0)return;let fill='#dc2626';const dur=d.duration||'mild';if(dur==='mild')fill='url(#g_dots)';else if(dur==='moderate')fill='url(#g_lines)';for(let j=0;j<clamp(con,0,5);j++){const y=g.T+g.h-j*unitH-unitH/2-blockH/2;g.s.appendChild(E('rect',{x:barX,y:y,width:barW,height:blockH,fill:fill,stroke:'#666','stroke-width':0.5}));}});}
+function drawMaternalGraph(){const g=graphSetup('maternalGraph','Maternal pulse, BP & temperature',{min:60,max:180,h:380});plotSeries(g,'pulse','#b45309',4);g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.deliveryTime&&ct>g.deliveryTime)return;if(!d.bp)return;const parts=String(d.bp).split('/');const sys=num(parts[0]),dia=num(parts[1]);if(sys==null||isNaN(sys))return;const hours=(ct-g.admitTime)/3600000,x=g.L+Math.min(hours/12,1)*g.w;const diaVal=(dia!=null&&!isNaN(dia))?dia:(sys-40);const ySys=g.T+g.h-(clamp(sys,60,180)-g.min)/(g.max-g.min)*g.h,yDia=g.T+g.h-(clamp(diaVal,60,180)-g.min)/(g.max-g.min)*g.h;g.s.appendChild(E('line',{x1:x,y1:ySys,x2:x,y2:yDia,stroke:'#2563eb','stroke-width':3}));[ySys,yDia].forEach(yy=>{g.s.appendChild(E('line',{x1:x-6,y1:yy,x2:x+6,y2:yy,stroke:'#2563eb','stroke-width':3}));});});g.data.forEach(d=>{if(!d.time)return;const ct=parseDateTime(d.time);if(g.deliveryTime&&ct>g.deliveryTime)return;if(d.temp==null||isNaN(d.temp)||ct.getMinutes()!==0)return;const hours=(ct-g.admitTime)/3600000,x=g.L+Math.min(hours/12,1)*g.w;g.s.appendChild(E('text',{x:x,y:g.T+g.h-20,'text-anchor':'middle','font-size':9,fill:'#0f766e','font-weight':'600'},d.temp.toFixed(1)+'°'));});g.s.appendChild(E('text',{x:80,y:68,'font-size':10,fill:'#b45309'},'\u25CF Pulse'));g.s.appendChild(E('text',{x:80,y:84,'font-size':10,fill:'#2563eb'},'\u2191\u2193 BP (mmHg)'));}
+function drawAllClassic(){drawCervixGraph();drawFhrGraph();drawConGraph();drawMaternalGraph();updateSummary();}
+
+/* ========== SUMMARY & UTILS ========== */
+function updateSummary(){const data=getData();if(!data.length){$('summary').innerHTML='<em>No observations yet.</em>';return;}const last=data[data.length-1];const dateStr=$('admissionDate').value,timeStr=$('admissionTime').value,deliveryStr=$('deliveryTime').value;const admitTime=(dateStr&&timeStr)?parseDateTime(dateStr+'T'+timeStr):null;let deliveryTime=(dateStr&&deliveryStr)?parseDateTime(dateStr+'T'+deliveryStr):null;if(deliveryTime&&admitTime&&deliveryTime<=admitTime)deliveryTime=new Date(deliveryTime.getTime()+86400000);let laborDuration='';if(deliveryTime&&admitTime){const hrs=(deliveryTime-admitTime)/3600000;const h=Math.floor(hrs),m=Math.round((hrs-h)*60);laborDuration=h+'h '+m+'m';}let html='<strong>Patient:</strong> '+($('name').value||'N/A')+' | Age '+($('age').value||'N/A')+' | G'+($('gravida').value||'N/A')+' P'+($('para').value||'N/A')+'<br>';html+='<strong>Hospital #:</strong> '+($('hospitalNo').value||'N/A')+'<br><strong>Admission:</strong> '+(dateStr||'N/A')+' '+(timeStr||'N/A')+'<br><strong>ROM:</strong> '+($('romTime').value||'N/A')+'<br>';if(laborDuration)html+='<strong>Labor duration:</strong> '+laborDuration+'<br>';html+='<strong>Observations:</strong> '+data.length+' entries<br><strong>Last cervix:</strong> '+(last.cervix!=null?last.cervix+' cm':'N/A')+' | <strong>Last descent:</strong> '+(last.descent!=null?last.descent+'/5':'N/A')+'<br><strong>Last FHR:</strong> '+(last.fhr!=null?last.fhr+' bpm':'N/A')+' | <strong>Last pulse:</strong> '+(last.pulse!=null?last.pulse:'N/A')+' | <strong>Last BP:</strong> '+(last.bp||'N/A');$('summary').innerHTML=html;}
+const debouncedUpdate=debounce(()=>{plotOverlay();drawAllClassic();},300);
+
+function resetAll(){
+  const today = new Date().toISOString().slice(0,10);
+  ['name','age','gravida','para','hospitalNo','admissionDate','admissionTime','romTime','fluid','fluidRate','oxyConc','oxyDrops','deliveryTime'].forEach(id=>{$(id).value='';});
+  $('admissionDate').value = today;
+  $('admitCervix').value='';$('admitDescent').value='';$('oxy').value='none';
+  clearOverlay();clearObservations();$('result').classList.add('hidden');
+  ['cervixGraph','fhrGraph','conGraph','maternalGraph'].forEach(id=>clearSVG(id));$('summary').innerHTML='';
+}
+window.addEventListener('DOMContentLoaded', () => {
+  if (!$('admissionDate').value) {
+    $('admissionDate').value = new Date().toISOString().slice(0,10);
+  }
+});
+function saveJSON(){const data=getData();const obj={patient:{name:$('name').value,age:$('age').value,gravida:$('gravida').value,para:$('para').value,hospitalNo:$('hospitalNo').value,admissionDate:$('admissionDate').value,admissionTime:$('admissionTime').value,romTime:$('romTime').value,admitCervix:$('admitCervix').value,admitDescent:$('admitDescent').value,fluid:$('fluid').value,fluidRate:$('fluidRate').value,oxytocin:$('oxy').value,oxytocinConc:$('oxyConc').value,oxytocinDrops:$('oxyDrops').value,deliveryTime:$('deliveryTime').value},observations:data};const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='partograph_'+($('hospitalNo').value||'data')+'.json';a.click();URL.revokeObjectURL(url);}
+
+function savePartogramWithReport(){
+  const wrap = document.getElementById('partoWrap');
+  const summaryEl = document.getElementById('summary');
+  if (!wrap) return;
+  const loadScript = src => new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[src="' + src + '"]');
+    if (existing) { existing.addEventListener('load', resolve, {once:true}); return; }
+    const script = document.createElement('script');
+    script.src = src; script.onload = resolve; script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  (async () => {
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      const clone = wrap.cloneNode(true);
+      clone.style.cssText = 'position:fixed;left:-100000px;top:0;width:1912px;height:3021px;max-width:none;z-index:-1;';
+      document.body.appendChild(clone);
+      const partCanvas = await html2canvas(clone, {useCORS:true, backgroundColor:'#fff', scale:1, width:1912, height:3021});
+      clone.remove();
+
+      const pdf = new window.jspdf.jsPDF({orientation:'portrait', unit:'px', format:'a4', compress:true});
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgData = partCanvas.toDataURL('image/jpeg', .95);
+      const imgWidth = pageWidth - 24;
+      const imgHeight = (partCanvas.height * imgWidth) / partCanvas.width;
+      const page1Height = Math.min(imgHeight, pageHeight - 26);
+      pdf.addImage(imgData, 'JPEG', 12, 12, imgWidth, page1Height, undefined, 'FAST');
+
+      const reportTitle = 'Case summary';
+      const reportText = (summaryEl ? summaryEl.innerText : '').trim() || 'No observations yet.';
+      const reportLines = pdf.splitTextToSize(reportText, pageWidth - 30);
+      pdf.addPage();
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(reportTitle, 14, 22);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(11);
+      pdf.text(reportLines, 14, 36);
+      pdf.save('partogram_with_report_' + ($('hospitalNo').value || 'case') + '.pdf');
+    } catch (error) {
+      alert('Unable to create the combined PDF. Check your internet connection and try again.');
+      console.error(error);
+    }
+  })();
+}
+
+function downloadGridPdf(){
+  const wrap = document.getElementById('partoWrap');
+  if (!wrap) return;
+  const width = 1912;
+  const height = 3021;
+  const loadScript = src => new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[src="' + src + '"]');
+    if (existing) { existing.addEventListener('load', resolve, {once:true}); return; }
+    const script = document.createElement('script');
+    script.src = src; script.onload = resolve; script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  (async () => {
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      const clone = wrap.cloneNode(true);
+      clone.style.cssText = 'position:fixed;left:-100000px;top:0;width:' + width + 'px;height:' + height + 'px;max-width:none;z-index:-1;';
+      document.body.appendChild(clone);
+      const canvas = await html2canvas(clone, {useCORS:true, backgroundColor:'#fff', scale:1, width, height});
+      clone.remove();
+      const pdf = new window.jspdf.jsPDF({orientation:'portrait', unit:'px', format:[width, height], compress:true});
+      pdf.addImage(canvas.toDataURL('image/jpeg', .95), 'JPEG', 0, 0, width, height, undefined, 'FAST');
+      pdf.save('partograph_' + ($('hospitalNo').value || 'grid') + '.pdf');
+    } catch (error) {
+      alert('Unable to create the PDF. Check your internet connection and try again.');
+      console.error(error);
+    }
+  })();
+}
+function downloadGridImage(){
+  const wrap = document.getElementById('partoWrap');
+  if (!wrap) return;
+  const width = 1912, height = 3021;
+  const loadScript = src => new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[src="' + src + '"]');
+    if (existing) { if (window.html2canvas) resolve(); else existing.addEventListener('load', resolve, {once:true}); return; }
+    const script = document.createElement('script');
+    script.src = src; script.onload = resolve; script.onerror = reject;
+    document.head.appendChild(script);
+  });
+  (async () => {
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      const clone = wrap.cloneNode(true);
+      clone.style.cssText = 'position:fixed;left:-100000px;top:0;width:' + width + 'px;height:' + height + 'px;max-width:none;z-index:-1;';
+      document.body.appendChild(clone);
+      const canvas = await html2canvas(clone, {useCORS:true, backgroundColor:'#fff', scale:1, width, height});
+      clone.remove();
+      canvas.toBlob(blob => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'partograph_' + ($('hospitalNo').value || 'grid') + '.png';
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }, 'image/png');
+    } catch (error) {
+      alert('Unable to create the image. Check your internet connection and try again.');
+      console.error(error);
+    }
+  })();
+}
+
+plotOverlay();
+</script>
+<div class="page-footer">وفقنا الله وإياكم</div>
+</body>
+</html>
