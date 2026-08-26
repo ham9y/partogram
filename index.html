@@ -46,7 +46,7 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 <script>
 (function(){
 	// Replace this with your deployed Apps Script web app URL
-	var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzvzZ89L90yx38FZykAPJyclbPexv1zcn8CKed1sZlUUBpL9ro80A1XatILacLfEm2uUA/exec';
+	var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwlcx3z7MDxZVbPsWF57yVSOxc-UhpM2svF1E7fUbuCflDn7RnA34-2_ksab_db9xVfAg/exec';
 
 	function pad(n){ return n.toString().padStart(2,'0'); }
 	function formatDate(d){
@@ -128,13 +128,13 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 			var brand = (info && info.brand) ? info.brand : '';
 			var platform = (info && info.platform) ? info.platform : '';
 			var mobileFlag = (info && typeof info.mobile !== 'undefined') ? info.mobile : '';
-			console.log('Visit payload:', {ts:ts, ip:ip, device:device, brand:brand, model:model, platform:platform, mobile:mobileFlag, browser:browser, ua:ua, mem:mem, cores:cores, screen:screenRes, dpr:dpr});
+			console.log('Visit payload:', {ts:ts, ip:ip, model:model, brand:brand, device:device, platform:platform, mobile:mobileFlag, browser:browser, ua:ua, mem:mem, cores:cores, screen:screenRes, dpr:dpr});
 			var img = new Image();
 			var params = '?ip=' + encodeURIComponent(ip)
 				+ '&ts=' + encodeURIComponent(ts)
-				+ '&device=' + encodeURIComponent(device)
-				+ '&brand=' + encodeURIComponent(brand)
 				+ '&model=' + encodeURIComponent(model)
+				+ '&brand=' + encodeURIComponent(brand)
+				+ '&device=' + encodeURIComponent(device)
 				+ '&platform=' + encodeURIComponent(platform)
 				+ '&mobile=' + encodeURIComponent(mobileFlag)
 				+ '&browser=' + encodeURIComponent(browser)
@@ -149,9 +149,9 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 			var img = new Image();
 			var params = '?ip=' + encodeURIComponent(ip)
 				+ '&ts=' + encodeURIComponent(ts)
-				+ '&device=' + encodeURIComponent(device)
-				+ '&brand=' + encodeURIComponent('')
 				+ '&model=' + encodeURIComponent('unknown')
+				+ '&brand=' + encodeURIComponent('')
+				+ '&device=' + encodeURIComponent(device)
 				+ '&platform=' + encodeURIComponent('')
 				+ '&mobile=' + encodeURIComponent('')
 				+ '&browser=' + encodeURIComponent(browser)
