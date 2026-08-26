@@ -46,7 +46,7 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 <script>
 (function(){
 	// Replace this with your deployed Apps Script web app URL
-	var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyjsVdSJXF1Yq83lU2MBooOrsZhcYJ1TtQ6kccfktQJufxef8659_t_o-kskLrARnPaXA/exec';
+	var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyp1kTmLzdEE3vl9LEsQ1eSQAUwJ6uF1PZcq6nj_9BOEGemMQSMsTWEMNcWDDXzJWBe/exec';
 
 	function pad(n){ return n.toString().padStart(2,'0'); }
 	function formatDate(d){
@@ -66,6 +66,35 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 		return navigator.platform || 'Unknown';
 	}
 
+	// Try to get a precise phone model: use Client Hints when available,
+	// otherwise fall back to parsing the user-agent string (best-effort).
+	function getDeviceModel(ua){
+		if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues){
+			try{
+				return navigator.userAgentData.getHighEntropyValues(['model']).then(function(vals){
+					if (vals && vals.model) return vals.model || ua || 'unknown';
+					return ua || 'unknown';
+				});
+			}catch(e){ /* fall through */ }
+		}
+
+		// Fallback parsing for common Android/U-A patterns
+		var m;
+		// Android: look for 'Android ...; <MODEL> Build' or 'Android ...; <MODEL>)'
+		m = ua.match(/Android[^;]*;\s*([^;\)]+)\s*(?:Build|\))/i);
+		if (m && m[1]) return Promise.resolve(m[1].trim());
+
+		// Samsung/Google often have model codes like SM-G973F or Pixel 4
+		m = ua.match(/\b(SM-[A-Z0-9\-]+|Pixel\s*\d+[A-Za-z0-9]*)\b/i);
+		if (m && m[1]) return Promise.resolve(m[1]);
+
+		// iPhone/iPad: browser doesn't expose exact model (e.g. iPhone12,1) — return generic
+		if (/iPhone/i.test(ua)) return Promise.resolve('iPhone');
+		if (/iPad/i.test(ua)) return Promise.resolve('iPad');
+
+		return Promise.resolve(ua || 'unknown');
+	}
+
 	function detectBrowser(ua){
 		if (/Edg\//.test(ua)) return 'Edge ' + (ua.match(/Edg\/([\d\.]+)/)?RegExp.$1:'');
 		if (/OPR\//.test(ua)) return 'Opera ' + (ua.match(/OPR\/([\d\.]+)/)?RegExp.$1:'');
@@ -80,13 +109,27 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 		var ua = navigator.userAgent || '';
 		var device = detectDevice(ua);
 		var browser = detectBrowser(ua);
-		var img = new Image();
-		var params = '?ip=' + encodeURIComponent(ip)
-			+ '&ts=' + encodeURIComponent(ts)
-			+ '&device=' + encodeURIComponent(device)
-			+ '&browser=' + encodeURIComponent(browser);
-			+ '&ua=' + encodeURIComponent(ua);
-		img.src = WEB_APP_URL + params; // image request records the visit via GET
+
+		// Resolve phone model (may be async if Client Hints are used)
+		getDeviceModel(ua).then(function(phoneModel){
+			var img = new Image();
+			var params = '?ip=' + encodeURIComponent(ip)
+				+ '&ts=' + encodeURIComponent(ts)
+				+ '&device=' + encodeURIComponent(device)
+				+ '&browser=' + encodeURIComponent(browser)
+				+ '&ua=' + encodeURIComponent(ua)
+				+ '&model=' + encodeURIComponent(phoneModel);
+			img.src = WEB_APP_URL + params; // image request records the visit via GET
+		}).catch(function(){
+			var img = new Image();
+			var params = '?ip=' + encodeURIComponent(ip)
+				+ '&ts=' + encodeURIComponent(ts)
+				+ '&device=' + encodeURIComponent(device)
+				+ '&browser=' + encodeURIComponent(browser)
+				+ '&ua=' + encodeURIComponent(ua)
+				+ '&model=' + encodeURIComponent('unknown');
+			img.src = WEB_APP_URL + params;
+		});
 	}
 
 	function getIPAndSend(){
