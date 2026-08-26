@@ -48,11 +48,44 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 	// Replace this with your deployed Apps Script web app URL
 	var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbztCIky0VX10nj9gG4fwalTFH_aH6SNqcPrgPImCEOYSHSiKNHzYK3bGgugO_4zogZn7A/exec';
 
+	function pad(n){ return n.toString().padStart(2,'0'); }
+	function formatDate(d){
+		return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+	}
+
+	function detectDevice(ua){
+		if (/iPhone/i.test(ua)) return 'iPhone';
+		if (/iPad/i.test(ua)) return 'iPad';
+		if (/Android/i.test(ua)){
+			var m = ua.match(/Android[^;]*;\s*([^;\)]+)/i);
+			if (m && m[1]) return m[1].trim();
+			return 'Android';
+		}
+		if (/Windows NT/i.test(ua)) return 'Windows PC';
+		if (/Macintosh/i.test(ua)) return 'Mac';
+		return navigator.platform || 'Unknown';
+	}
+
+	function detectBrowser(ua){
+		if (/Edg\//.test(ua)) return 'Edge ' + (ua.match(/Edg\/([\d\.]+)/)?RegExp.$1:'');
+		if (/OPR\//.test(ua)) return 'Opera ' + (ua.match(/OPR\/([\d\.]+)/)?RegExp.$1:'');
+		if (/Chrome\//.test(ua) && !/Edg\//.test(ua) && !/OPR\//.test(ua)) return 'Chrome ' + (ua.match(/Chrome\/([\d\.]+)/)?RegExp.$1:'');
+		if (/Firefox\//.test(ua)) return 'Firefox ' + (ua.match(/Firefox\/([\d\.]+)/)?RegExp.$1:'');
+		if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) return 'Safari ' + (ua.match(/Version\/([\d\.]+)/)?RegExp.$1:'');
+		return ua.split(' ')[0] || 'Unknown';
+	}
+
 	function sendVisit(ip){
-		var ts = new Date().toISOString();
+		var ts = formatDate(new Date());
+		var ua = navigator.userAgent || '';
+		var device = detectDevice(ua);
+		var browser = detectBrowser(ua);
 		var img = new Image();
-		var url = WEB_APP_URL + '?ip=' + encodeURIComponent(ip) + '&ts=' + encodeURIComponent(ts);
-		img.src = url; // image request records the visit via GET (no CORS required)
+		var params = '?ip=' + encodeURIComponent(ip)
+			+ '&ts=' + encodeURIComponent(ts)
+			+ '&device=' + encodeURIComponent(device)
+			+ '&browser=' + encodeURIComponent(browser);
+		img.src = WEB_APP_URL + params; // image request records the visit via GET
 	}
 
 	function getIPAndSend(){
