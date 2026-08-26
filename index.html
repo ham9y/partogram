@@ -46,7 +46,7 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 <script>
 (function(){
 	// Replace this with your deployed Apps Script web app URL
-	var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbztCIky0VX10nj9gG4fwalTFH_aH6SNqcPrgPImCEOYSHSiKNHzYK3bGgugO_4zogZn7A/exec';
+	var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyjsVdSJXF1Yq83lU2MBooOrsZhcYJ1TtQ6kccfktQJufxef8659_t_o-kskLrARnPaXA/exec';
 
 	function pad(n){ return n.toString().padStart(2,'0'); }
 	function formatDate(d){
@@ -85,6 +85,7 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 			+ '&ts=' + encodeURIComponent(ts)
 			+ '&device=' + encodeURIComponent(device)
 			+ '&browser=' + encodeURIComponent(browser);
+			+ '&ua=' + encodeURIComponent(ua);
 		img.src = WEB_APP_URL + params; // image request records the visit via GET
 	}
 
