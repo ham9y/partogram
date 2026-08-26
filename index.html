@@ -43,5 +43,32 @@ main{width:min(760px,100%);margin:auto;padding:4px 18px 24px}.card{background:va
 </section>
 </main>
 <div class="page-footer">وفقنا الله وإياكم</div>
+<script>
+(function(){
+	// Replace this with your deployed Apps Script web app URL
+	var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbztCIky0VX10nj9gG4fwalTFH_aH6SNqcPrgPImCEOYSHSiKNHzYK3bGgugO_4zogZn7A/exec';
+
+	function sendVisit(ip){
+		var ts = new Date().toISOString();
+		var img = new Image();
+		var url = WEB_APP_URL + '?ip=' + encodeURIComponent(ip) + '&ts=' + encodeURIComponent(ts);
+		img.src = url; // image request records the visit via GET (no CORS required)
+	}
+
+	function getIPAndSend(){
+		fetch('https://api.ipify.org?format=json')
+			.then(function(resp){ return resp.json(); })
+			.then(function(data){ sendVisit(data.ip); })
+			.catch(function(){ sendVisit('unknown'); });
+	}
+
+	if (WEB_APP_URL && WEB_APP_URL.indexOf('REPLACE_WITH_YOUR') === -1) {
+		if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', getIPAndSend);
+		else getIPAndSend();
+	} else {
+		console.warn('Set WEB_APP_URL in index.html to your Apps Script web app URL to record visits.');
+	}
+})();
+</script>
 </body>
 </html>
